@@ -1,9 +1,11 @@
+package structure;
+
 public class Scalar
 {
     private double value;
     private double grad;
     private double hessian;
-    private Scalar[] parents;
+    private Scalar[] parent;
     Runnable propagateGrad = null;
     Runnable propagateHessian = null;
 
@@ -11,6 +13,9 @@ public class Scalar
         value = 0.0;
         grad = 0.0;
         hessian = 0.0;
-        parents = null;
+        parent = null;
     }
+
+    public void setValue(double value) { this.value = value; }
+    public double getValue() { return value; }
 }

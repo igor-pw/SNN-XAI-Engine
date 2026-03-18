@@ -1,3 +1,7 @@
+package core;
+
+import structure.Scalar;
+
 public class Pool
 {
     private int pointer = 0;
@@ -30,4 +34,6 @@ public class Pool
            store[i] = new Scalar();
         }
     }
+
+    public int getPointer() { return pointer; }
 }
