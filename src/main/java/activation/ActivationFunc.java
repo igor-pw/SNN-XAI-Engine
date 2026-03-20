@@ -2,5 +2,5 @@ package activation;
 
 public interface ActivationFunc
 {
-    double activate();
+    double activate(double value);
 }
