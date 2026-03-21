@@ -1,9 +1,10 @@
 package activation;
 
+import structure.Scalar;
+
 public class SigmoidActivation implements ActivationFunc
 {
     @Override
-    public double activate(double value) {
-        return 0;
+    public void activate(Scalar[] value) {
     }
 }

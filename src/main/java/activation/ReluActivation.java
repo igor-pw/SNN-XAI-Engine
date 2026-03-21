@@ -1,8 +1,9 @@
 package activation;
 
+import structure.Scalar;
+
 public class ReluActivation implements ActivationFunc
 {
-    public double activate(double value) {
-       return 0;
+    public void activate(Scalar[] value) {
     }
 }

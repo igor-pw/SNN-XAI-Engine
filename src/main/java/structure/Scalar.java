@@ -16,6 +16,13 @@ public class Scalar
         parent = null;
     }
 
+    public Scalar(double value) {
+        this.value = value;
+        grad = 0.0;
+        hessian = 0.0;
+        parent = null;
+    }
+
     public void setValue(double value) { this.value = value; }
     public double getValue() { return value; }
 }

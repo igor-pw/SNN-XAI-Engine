@@ -1,6 +1,8 @@
 package activation;
 
+import structure.Scalar;
+
 public interface ActivationFunc
 {
-    double activate(double value);
+    void activate(Scalar[] value);
 }
