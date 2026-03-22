@@ -2,17 +2,12 @@ package activation;
 
 import structure.Scalar;
 
-public class ReluActivation implements ActivationFunc
+public class LinearActivation implements ActivationFunc
 {
+    @Override
     public void activate(Scalar[] input) {
         if(input.length == 0) {
             throw new IllegalArgumentException("Empty input");
-        }
-
-        for(Scalar scalar : input) {
-            if(scalar.getValue() < 0) {
-                scalar.setValue(0.0);
-            }
         }
     }
 }

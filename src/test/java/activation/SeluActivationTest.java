@@ -4,36 +4,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import structure.Scalar;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class SeluActivationTest
+public class SeluActivationTest extends ActivationFuncTest
 {
-    private SeluActivation selu;
-    private Scalar [] input;
-
-    private void initInput(double... values) {
-        input = new Scalar[values.length];
-
-        for(int i = 0; i < values.length; i++) {
-            input[i] = new Scalar(values[i]);
-        }
-    }
-
-    private double [] getResult (Scalar [] input) {
-        double [] result = new double[input.length];
-
-        for(int i = 0; i < input.length; i++) {
-            result[i] = input[i].getValue();
-        }
-
-        return result;
-    }
-
-    @BeforeEach
-    public void setUp() {
-        selu = new SeluActivation();
-    }
+    private final SeluActivation selu = new SeluActivation();
 
     @Test
     public void shouldUpdateToNegative_whenValueIsNegative() {
@@ -135,6 +110,7 @@ public class SeluActivationTest
 
     @Test
     public void shouldUpdateTwoValuesToX_whenValuesAreMixed() {
+        //given
         initInput(-7.213, 4.321, -1.04, -5.12, 0.12);
         double [] expected = {-1.756803721832739, 4.540078966363031, -1.136690897476226, -1.747592898934778, 0.126084118482658};
 
@@ -148,7 +124,12 @@ public class SeluActivationTest
         }
     }
 
-    //emptyInput
+    @Test
+    public void shouldThrowException_whenInputIsEmpty() {
+        //given
+        initInput();
 
-    //nullPointer
+        //then
+        assertThrows(IllegalArgumentException.class, () -> selu.activate(input));
+    }
 }
