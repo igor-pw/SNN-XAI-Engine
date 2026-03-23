@@ -23,6 +23,18 @@ public class Scalar
         parent = null;
     }
 
+    public Scalar(double value, Scalar... parent) {
+        this.value = value;
+        grad = 0.0;
+        hessian = 0.0;
+        this.parent = new Scalar[parent.length];
+
+        for(int i = 0; i < parent.length; i++) {
+            this.parent[i] = parent[i];
+        }
+    }
+
     public void setValue(double value) { this.value = value; }
     public double getValue() { return value; }
+    public Scalar[] getParent() { return parent; }
 }

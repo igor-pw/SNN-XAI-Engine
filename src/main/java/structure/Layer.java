@@ -1,7 +1,7 @@
 package structure;
 
 import activation.ActivationFunc;
-import core.Pool;
+import core.ScalarPool;
 
 public class Layer
 {
@@ -10,7 +10,7 @@ public class Layer
     private final Scalar[] output;
     private final ActivationFunc activation;
 
-    public Layer(int currentSize, int nextSize, Pool scalarPool, Scalar[] parameter, ActivationFunc activation) {
+    public Layer(int currentSize, int nextSize, ScalarPool scalarPool, Scalar[] parameter, ActivationFunc activation) {
         weight = new Scalar[currentSize][nextSize];
         bias = new Scalar[currentSize];
         output = new Scalar[currentSize];
