@@ -4,5 +4,5 @@ import structure.Layer;
 
 public interface Initializer
 {
-    void initialize(Layer [] layer);
+    void initialize(Layer... layer);
 }

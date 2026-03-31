@@ -10,7 +10,7 @@ public class LeCunInitializer implements Initializer
     private final Random rand = new Random();
 
     @Override
-    public void initialize(Layer [] layer) {
+    public void initialize(Layer... layer) {
         double std;
         Scalar [][] weight;
 

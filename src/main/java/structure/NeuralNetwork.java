@@ -4,7 +4,6 @@ import activation.ActivationFunc;
 import activation.SeluActivation;
 import initializer.Initializer;
 import loss.LossFunc;
-import core.ScalarPool;
 
 public class NeuralNetwork
 {
@@ -12,22 +11,28 @@ public class NeuralNetwork
     private Scalar[] parameter;
     private final LossFunc loss;
     private double cost = 0.0;
-    private final ScalarPool scalarPool;
 
-    public NeuralNetwork(ScalarPool scalarPool, int[] structure, LossFunc loss, ActivationFunc outputActivation) {
-        this.scalarPool = scalarPool;
+    public NeuralNetwork(int[] structure, LossFunc loss, ActivationFunc outputActivation) {
         layer = new Layer[structure.length];
         this.loss = loss;
 
         SeluActivation hiddenActivation = new SeluActivation();
 
-        for(int i = 0; i < structure.length-1; i++) {
-            layer[i] = new Layer(structure[i], structure[i+1], scalarPool, parameter, hiddenActivation);
+        for(int i = 0; i < structure.length - 1; i++) {
+            layer[i] = new Layer(structure[i], structure[i+1], hiddenActivation);
         }
-        layer[layer.length-1] = new Layer(structure[structure.length-1], 0, scalarPool, parameter, outputActivation);
     }
 
     public void initializeWeights(Initializer initializer) {
         initializer.initialize(layer);
     }
+
+    public void forward(Scalar [] input) {
+        Scalar [] output = layer[0].forward(input);
+        for(int i = 1; i < layer.length - 1; i++) {
+            output = layer[i].forward(output);
+        }
+    }
+
+    public Layer [] getLayer() { return layer; }
 }
