@@ -34,6 +34,15 @@ public class Scalar
         }
     }
 
+    public Scalar(Scalar scalar) {
+        value = scalar.value;
+        grad = scalar.grad;
+        hessian = scalar.hessian;
+        parent = new Scalar[1];
+
+        parent[0] = scalar;
+    }
+
     public void setValue(double value) { this.value = value; }
     public double getValue() { return value; }
     public Scalar[] getParent() { return parent; }

@@ -7,7 +7,7 @@ public class Layer
 {
     private Scalar[][] weight;
     private final Scalar[] bias;
-    private final Scalar[] output;
+    private Scalar[] output;
     private final ActivationFunc activation;
 
     public Layer(int prevSize, int currentSize, ActivationFunc activation) {
@@ -46,11 +46,14 @@ public class Layer
             output[i] = operator.add(output[i], bias[i]);
         }
 
+        output = operator.activate(output, activation);
+
+
         return output;
     }
 
-    public int getRows() { return weight.length; }
-    public int getCols() { return weight[0].length; }
+    public int getOutputSize() { return weight.length; }
+    public int getInputSize() { return weight[0].length; }
     public Scalar [][] getWeight() { return weight; }
     public Scalar [] getBias() { return bias; }
     public Scalar [] getOutput() { return output; }

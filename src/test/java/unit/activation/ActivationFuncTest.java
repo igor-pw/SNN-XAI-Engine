@@ -1,4 +1,4 @@
-package activation;
+package unit.activation;
 
 import structure.Scalar;
 

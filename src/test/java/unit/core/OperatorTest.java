@@ -1,7 +1,15 @@
 package core;
 
+import activation.*;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.aggregator.ArgumentAccessException;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import structure.Scalar;
+
+import java.lang.reflect.AccessibleObject;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -104,4 +112,31 @@ public class OperatorTest
             assertEquals(expected[i], parent[i].getValue());
         }
     }
+
+    static Stream<Arguments> allActivation() {
+        return Stream.of(
+                Arguments.of(new SeluActivation(), new double[]{-1.590598464273987, 0.0, 3.299201100296208}, 1e-12) ,
+                Arguments.of(new ReluActivation(), new double[]{0.0, 0.0, 3.14}, 0.0),
+                Arguments.of(new SigmoidActivation(), new double[]{0.086986319931842, 0.5, 0.958512880698304}, 1e-12),
+                Arguments.of(new SoftmaxActivation(), new double[]{0.0039370754, 0.0413237814, 0.9547391432}, 1e-9),
+                Arguments.of(new LinearActivation(), new double[]{-2.351, 0.0, 3.14}, 0.0)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("allActivation")
+    public void shouldCorrectlyReturnScalarWithXValue_whenActivateIsUsed(ActivationFunc activationFunc, double [] expected, double delta) {
+        //given
+        Scalar [] x = {new Scalar(-2.351), new Scalar(0.0), new Scalar(3.14)};
+
+        //when
+        Scalar [] result = operator.activate(x, activationFunc);
+
+        //then
+        for(int i = 0; i < expected.length; i++) {
+            assertEquals(expected[i], result[i].getValue(), delta);
+        }
+    }
+
+
 }

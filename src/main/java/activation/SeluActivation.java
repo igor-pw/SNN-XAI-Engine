@@ -9,7 +9,6 @@ public class SeluActivation implements ActivationFunc
 
     @Override
     public void activate(Scalar[] input) {
-
         if(input.length == 0) {
             throw new IllegalArgumentException("Empty input");
         }

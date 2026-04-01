@@ -1,10 +1,14 @@
 package utils;
 
 import activation.ActivationFunc;
+import activation.LinearActivation;
+import activation.ReluActivation;
 import activation.SeluActivation;
 import initializer.Initializer;
 import initializer.LeCunInitializer;
 import jdk.jshell.spi.ExecutionControl;
+import loss.LossFunc;
+import loss.mseLoss;
 import structure.Layer;
 import structure.NeuralNetwork;
 import structure.Scalar;
@@ -14,14 +18,14 @@ import java.util.Random;
 public class TestGenerator
 {
     private static final long SEED = 337609;
-    private ActivationFunc selu = new SeluActivation();
     private Initializer lecun = new LeCunInitializer();
+    private LossFunc mse = new mseLoss();
     private Random random = new Random(SEED);
 
-    public Layer initDefinedLayer(double [][] weight, double [] bias) {
+    public Layer initDefinedLayer(double [][] weight, double [] bias, ActivationFunc activationFunc) {
         int inputSize = weight[0].length;
         int outputSize = weight.length;
-        Layer layer = new Layer(inputSize, outputSize, selu);
+        Layer layer = new Layer(inputSize, outputSize, activationFunc);
 
         for(int i = 0; i < outputSize; i++) {
             for(int j = 0; j < inputSize; j++) {
@@ -34,8 +38,8 @@ public class TestGenerator
         return layer;
     }
 
-    public Layer initEqualWeightsLayer(int inputSize, int outputSize, double value) {
-        Layer layer = new Layer(inputSize, outputSize, selu);
+    public Layer initEqualWeightsLayer(int inputSize, int outputSize, double value, ActivationFunc activationFunc) {
+        Layer layer = new Layer(inputSize, outputSize, activationFunc);
 
         for(int i = 0; i < outputSize; i++) {
             for(int j = 0; j < inputSize; j++) {
@@ -48,8 +52,8 @@ public class TestGenerator
         return layer;
     }
 
-    public Layer initRandomLayer(int inputSize, int outputSize) {
-        Layer layer = new Layer(inputSize, outputSize, selu);
+    public Layer initRandomLayer(int inputSize, int outputSize, ActivationFunc activationFunc) {
+        Layer layer = new Layer(inputSize, outputSize, activationFunc);
         lecun.initialize(layer);
 
         return layer;
@@ -78,15 +82,36 @@ public class TestGenerator
         return result;
     }
 
-    public NeuralNetwork initDefinedNeuralNetwork(int [] structure, Scalar [][] bias, Scalar [][] ... weight) {
-        throw new RuntimeException("Not implemented yet...");
+    public NeuralNetwork initDefinedNeuralNetwork(int [] structure, ActivationFunc activationFunc, double [][] bias, double [][] ... weight) {
+        int layerNumber = structure.length;
+        NeuralNetwork neuralNetwork = new NeuralNetwork(structure, mse, activationFunc);
+
+        Layer [] layer = neuralNetwork.getLayer();
+
+        for(int i = 0; i < layerNumber; i++) {
+            layer[i] = initDefinedLayer(weight[i], bias[i], activationFunc);
+        }
+
+        return neuralNetwork;
     }
 
-    public NeuralNetwork initRandomNeuralNetwork(int [] structure) {
-        throw new RuntimeException("Not implemented yet...");
+    public NeuralNetwork initRandomNeuralNetwork(int [] structure, ActivationFunc activationFunc) {
+        NeuralNetwork neuralNetwork = new NeuralNetwork(structure, mse, activationFunc);
+        neuralNetwork.initializeWeights(lecun);
+
+        return neuralNetwork;
     }
 
-    public NeuralNetwork initEqualsWeightsNeuralNetwork(int [] structure, double value) {
-        throw new RuntimeException("Not implemented yet...");
+    public NeuralNetwork initEqualsWeightsNeuralNetwork(int [] structure, double value, ActivationFunc activationFunc) {
+        int layerNumber = structure.length - 1;
+        NeuralNetwork neuralNetwork = new NeuralNetwork(structure, mse, activationFunc);
+
+        Layer [] layer = neuralNetwork.getLayer();
+
+        for(int i = 0; i < layerNumber; i++) {
+            layer[i] = initEqualWeightsLayer(structure[i], structure[i+1], value, activationFunc);
+        }
+
+        return neuralNetwork;
     }
 }

@@ -1,8 +1,7 @@
-package activation;
+package unit.activation;
 
-import org.junit.jupiter.api.BeforeEach;
+import activation.SoftmaxActivation;
 import org.junit.jupiter.api.Test;
-import structure.Scalar;
 
 import static org.junit.jupiter.api.Assertions.*;
 

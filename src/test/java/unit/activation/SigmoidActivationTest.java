@@ -1,6 +1,6 @@
-package activation;
+package unit.activation;
 
-import org.junit.jupiter.api.BeforeEach;
+import activation.SigmoidActivation;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
