@@ -32,22 +32,17 @@ public class Layer
         int outputSize = output.length;
 
         // ? inputSize = this.inputSize;
-        Scalar [] multiplyResult = new Scalar[inputSize];
 
         for(int i = 0; i < outputSize; i++) {
+            output[i].setValue(bias[i].getValue());
+
             for (int j = 0; j < inputSize; j++) {
-                multiplyResult[j] = operator.multiply(weight[i][j], input[j]);
+                output[i] = operator.add(output[i], operator.multiply(weight[i][j], input[j]));
             }
 
-            for(int j = 0; j < inputSize - 1; j++) {
-                output[i] = operator.add(multiplyResult[j], multiplyResult[j + 1]);
-            }
-
-            output[i] = operator.add(output[i], bias[i]);
         }
 
         output = operator.activate(output, activation);
-
 
         return output;
     }

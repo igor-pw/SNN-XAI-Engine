@@ -15,9 +15,9 @@ public class SeluActivation implements ActivationFunc
 
         for(Scalar scalar : input) {
             double currentValue = scalar.getValue();
-            double newValue = 0.0;
+            double newValue;
 
-            newValue = currentValue > 0 ? lambda * currentValue : alfa * lambda * (Math.exp(currentValue) - 1);
+            newValue = currentValue > 0.0 ? lambda * currentValue : alfa * lambda * (Math.exp(currentValue) - 1);
             scalar.setValue(newValue);
         }
     }

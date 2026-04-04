@@ -1,13 +1,44 @@
 package unit.activation;
 
+import activation.ActivationFunc;
 import activation.SigmoidActivation;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SigmoidActivationTest extends ActivationFuncTest
 {
     private final SigmoidActivation sigmoid = new SigmoidActivation();
+
+    @Override
+    protected ActivationFunc getActivation() { return sigmoid; }
+
+    @Override
+    protected Stream<Arguments> provideUpdateToXTestData() {
+        return Stream.of(
+                Arguments.of("Negative input", -8.5105, 0.000201302597281),
+                Arguments.of("Zero input", 0.0, 0.5),
+                Arguments.of("Positive input", 2.7198, 0.938184935960464)
+        );
+    };
+
+    @Override
+    protected Stream<Arguments> provideUpdateToVectorXTestData() {
+        return Stream.of(
+                Arguments.of("Negative input",
+                        new double[]{-5.12, -0.421},
+                        new double[]{0.005940522198340, 0.396277483698283}),
+                Arguments.of("Positive input",
+                        new double[]{0.215, 0.621},
+                        new double[]{0.553543903151118, 0.650445948782812}),
+                Arguments.of("Mixed input",
+                        new double[]{0.532, 2.5421, -1.5421, 0.0, -3.04591},
+                        new double[]{0.629949459291170, 0.927040989600918, 0.176230203918291, 0.5, 0.045394379263260})
+        );
+    }
 
     @Test
     public void shouldUpdateToPositive_whenValueIsNegative() {
@@ -33,89 +64,5 @@ public class SigmoidActivationTest extends ActivationFuncTest
 
         //then
         assertTrue(result > 0.0);
-    }
-
-    @Test
-    public void shouldUpdateToX_whenValueIsNegative() {
-        //given
-        initInput(-8.5105);
-        double expected = 0.000201302597281;
-
-        //when
-        sigmoid.activate(input);
-        double result = input[0].getValue();
-
-        //then
-        assertEquals(expected, result, 1e-12);
-    }
-
-    @Test
-    public void shouldUpdateToX_whenValueIsPositive() {
-        //given
-        initInput(2.7198);
-        double expected = 0.938184935960464;
-
-        //when
-        sigmoid.activate(input);
-        double result = input[0].getValue();
-
-        //then
-        assertEquals(expected, result, 1e-12);
-    }
-
-    @Test
-    public void shouldUpdateToX_whenValuesAreNegative() {
-        //given
-        initInput(-5.12, -0.421);
-        double [] expected = {0.005940522198340, 0.396277483698283};
-
-        //when
-        sigmoid.activate(input);
-        double [] result = getResult(input);
-
-        //then
-        for(int i = 0; i < expected.length; i++) {
-            assertEquals(expected[i], result[i], 1e-12);
-        }
-    }
-
-    @Test
-    public void shouldUpdateToX_whenValuesArePositive() {
-        //given
-        initInput(0.215, 0.621);
-        double [] expected = {0.553543903151118, 0.650445948782812};
-
-        //when
-        sigmoid.activate(input);
-        double [] result = getResult(input);
-
-        //then
-        for(int i = 0; i < expected.length; i++) {
-            assertEquals(expected[i], result[i], 1e-12);
-        }
-    }
-
-    @Test
-    public void shouldUpdateToX_whenValuesAreMixed() {
-        initInput(0.532, 2.5421, -1.5421, 0.0, -3.04591);
-        double [] expected = {0.629949459291170, 0.927040989600918, 0.176230203918291, 0.5, 0.045394379263260};
-
-        //when
-        sigmoid.activate(input);
-        double [] result = getResult(input);
-
-        //then
-        for(int i = 0; i < expected.length; i++) {
-            assertEquals(expected[i], result[i], 1e-12);
-        }
-    }
-
-    @Test
-    public void shouldThrowException_whenInputIsEmpty() {
-        //given
-        initInput();
-
-        //then
-        assertThrows(IllegalArgumentException.class, () -> sigmoid.activate(input));
     }
 }

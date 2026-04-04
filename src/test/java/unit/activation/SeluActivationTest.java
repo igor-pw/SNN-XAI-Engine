@@ -1,13 +1,46 @@
 package unit.activation;
 
+import activation.ActivationFunc;
 import activation.SeluActivation;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
+import structure.Scalar;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static utils.TestUtils.getResult;
 
 public class SeluActivationTest extends ActivationFuncTest
 {
     private final SeluActivation selu = new SeluActivation();
+
+    @Override
+    protected ActivationFunc getActivation() { return selu; }
+
+    @Override
+    protected Stream<Arguments> provideUpdateToXTestData() {
+        return Stream.of(
+                Arguments.of("Negative input", -5.67, -1.75203765117812),
+                Arguments.of("Zero input", 0.0, 0.0),
+                Arguments.of("Positive input", 3.57, 3.751002524859065)
+        );
+    };
+
+    @Override
+    protected Stream<Arguments> provideUpdateToVectorXTestData() {
+        return Stream.of(
+                Arguments.of("Negative input",
+                        new double[]{-0.91, -3.14192},
+                        new double[]{-1.050421767898739, -1.682149845496720}),
+                Arguments.of("Positive input",
+                        new double[]{8.24, 0.48},
+                        new double[]{8.657776135809159, 0.504336473930630}),
+                Arguments.of("Mixed input",
+                        new double[]{-7.213, 4.321, -1.04, -5.12, 0.12},
+                        new double[]{-1.756803721832739, 4.540078966363031, -1.136690897476226, -1.747592898934778, 0.126084118482658})
+        );
+    }
 
     @Test
     public void shouldUpdateToNegative_whenValueIsNegative() {
@@ -33,102 +66,5 @@ public class SeluActivationTest extends ActivationFuncTest
 
         //then
         assertTrue(result > 0);
-    }
-
-    @Test
-    public void shouldReturnZero_whenValueIsZero() {
-        //given
-        initInput(0.0);
-
-        //when
-        selu.activate(input);
-        double result = input[0].getValue();
-
-        //then
-        assertEquals(0.0, result);
-    }
-
-    @Test
-    public void shouldUpdateToX_whenValueIsPositive() {
-        //given
-        initInput(3.57);
-
-        //when
-        selu.activate(input);
-        double result = input[0].getValue();
-
-        //then
-        assertEquals(3.751002524859065, result, 1e-12);
-    }
-
-    @Test
-    public void shouldUpdateTwoValuesToX_whenValuesArePositive() {
-        //given
-        initInput(8.24, 0.48);
-        double [] expected = {8.657776135809159, 0.504336473930630};
-
-        //when
-        selu.activate(input);
-        double [] result = getResult(input);
-
-        //then
-        for(int i = 0; i < expected.length; i++) {
-            assertEquals(expected[i], result[i], 1e-12);
-        }
-    }
-
-    @Test
-    public void shouldUpdateToX_whenValueIsNegative() {
-        //given
-        initInput(-5.67);
-        double expected = -1.75203765117812;
-
-        //when
-        selu.activate(input);
-        double result = input[0].getValue();
-
-        //then
-        assertEquals(expected, result, 1e-12);
-    }
-
-    @Test
-    public void shouldUpdateTwoValuesToX_whenValuesAreNegative() {
-        //given
-        initInput(-0.91, -3.14192);
-        double [] expected = {-1.050421767898739, -1.682149845496720};
-
-        //when
-        selu.activate(input);
-        double [] result = getResult(input);
-
-        //then
-        for(int i = 0; i < expected.length; i++) {
-            assertEquals(expected[i], result[i], 1e-12);
-        }
-    }
-
-    @Test
-    public void shouldUpdateTwoValuesToX_whenValuesAreMixed() {
-        //given
-        initInput(-7.213, 4.321, -1.04, -5.12, 0.12);
-        double [] expected = {-1.756803721832739, 4.540078966363031, -1.136690897476226, -1.747592898934778, 0.126084118482658};
-
-        //when
-        selu.activate(input);
-        double [] result = getResult(input);
-
-        //then
-        for(int i = 0; i < expected.length; i++) {
-            assertEquals(expected[i], result[i], 1e-12);
-        }
-    }
-
-    @Test
-    public void shouldThrowException_whenInputIsEmpty() {
-        //given
-        initInput();
-
-        //then
-        assertThrows(IllegalArgumentException.class, () -> selu.activate(input));
     }
 }

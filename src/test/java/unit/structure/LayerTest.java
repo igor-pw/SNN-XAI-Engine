@@ -3,14 +3,12 @@ package unit.structure;
 import org.junit.jupiter.api.Test;
 import structure.Layer;
 import structure.Scalar;
-import utils.TestGenerator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static utils.TestUtils.getResult;
 
 public class LayerTest extends StructureTest
 {
-    private TestGenerator generator = new TestGenerator();
-
     @Test
     public void shouldReturnXSizeVector_whenForwardIsUsed() {
         //given

@@ -1,19 +1,15 @@
 package unit.structure;
 
-import loss.LossFunc;
-import loss.mseLoss;
 import org.junit.jupiter.api.Test;
 import structure.Layer;
 import structure.NeuralNetwork;
 import structure.Scalar;
-import utils.TestGenerator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static utils.TestUtils.getResult;
 
 public class NeuralNetworkTest extends StructureTest
 {
-    private final TestGenerator generator = new TestGenerator();
-
     @Test
     public void shouldReturnXSizeVectors_whenForwardIsUsed() {
         //given
@@ -47,7 +43,7 @@ public class NeuralNetworkTest extends StructureTest
         Layer outputLayer = neuralNetwork.getLayer()[layerNumber - 1];
 
         Scalar [] input = generator.initDefinedScalarVector(0.25, 0.75);
-        double [] expected = {1.5, 1.5};
+        double [] expected = {2.5, 2.5};
 
         //when
         neuralNetwork.forward(input);
