@@ -2,17 +2,18 @@ package structure;
 
 import activation.ActivationFunc;
 import activation.SeluActivation;
-import initializer.Initializer;
+import initialization.Initializer;
+import loss.AbstractLossFunc;
 import loss.LossFunc;
 
 public class NeuralNetwork
 {
     private Layer[] layer;
     private Scalar[] parameter;
-    private final LossFunc loss;
+    private final AbstractLossFunc loss;
     private double cost = 0.0;
 
-    public NeuralNetwork(int[] structure, LossFunc loss, ActivationFunc outputActivation) {
+    public NeuralNetwork(int[] structure, AbstractLossFunc loss, ActivationFunc outputActivation) {
         int layerNumber = structure.length - 1;
         layer = new Layer[layerNumber];
         this.loss = loss;

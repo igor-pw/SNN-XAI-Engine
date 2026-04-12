@@ -6,8 +6,9 @@ public class Scalar
     private double grad;
     private double hessian;
     private Scalar[] parent;
-    Runnable propagateGrad = null;
-    Runnable propagateHessian = null;
+
+    public Runnable propagateGrad = null;
+    public Runnable propagateHessian = null;
 
     public Scalar() {
         value = 0.0;
@@ -46,4 +47,7 @@ public class Scalar
     public void setValue(double value) { this.value = value; }
     public double getValue() { return value; }
     public Scalar[] getParent() { return parent; }
+    public void setGrad(double grad) { this.grad = grad; }
+    public double getGrad() { return grad; }
+    public void addGrad(double grad) { this.grad += grad; }
 }

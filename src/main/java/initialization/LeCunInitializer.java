@@ -1,4 +1,4 @@
-package initializer;
+package initialization;
 
 import structure.Layer;
 import structure.Scalar;

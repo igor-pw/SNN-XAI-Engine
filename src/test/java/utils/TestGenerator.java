@@ -1,25 +1,22 @@
 package utils;
 
 import activation.ActivationFunc;
-import activation.LinearActivation;
-import activation.ReluActivation;
-import activation.SeluActivation;
-import initializer.Initializer;
-import initializer.LeCunInitializer;
-import jdk.jshell.spi.ExecutionControl;
-import loss.LossFunc;
-import loss.mseLoss;
+import initialization.Initializer;
+import initialization.LeCunInitializer;
+import loss.AbstractLossFunc;
+import loss.MseLoss;
 import structure.Layer;
 import structure.NeuralNetwork;
 import structure.Scalar;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class TestGenerator
 {
     private static final long SEED = 337609;
     private Initializer lecun = new LeCunInitializer();
-    private LossFunc mse = new mseLoss();
+    private AbstractLossFunc mse = new MseLoss();
     private Random random = new Random(SEED);
 
     public Layer initDefinedLayer(double [][] weight, double [] bias, ActivationFunc activationFunc) {
@@ -70,7 +67,17 @@ public class TestGenerator
         return result;
     }
 
-    public Scalar[] initRandomScalarVector(int size, double bound) {
+    public Scalar [] initOneValueScalarVector(int size, double value) {
+        Scalar [] result = new Scalar[size];
+
+        for(int i = 0; i < size; i++) {
+            result[i] = new Scalar(value);
+        }
+
+        return result;
+    }
+
+    public Scalar [] initRandomScalarVector(int size, double bound) {
         Scalar [] result = new Scalar[size];
         double value;
 
@@ -81,6 +88,7 @@ public class TestGenerator
 
         return result;
     }
+
 
     public NeuralNetwork initDefinedNeuralNetwork(int [] structure, ActivationFunc activationFunc, double [][] bias, double [][] ... weight) {
         int layerNumber = structure.length;
@@ -113,5 +121,35 @@ public class TestGenerator
         }
 
         return neuralNetwork;
+    }
+
+    public double [][] generateRandomMatrix(int rows, int cols) {
+        double [][] output = new double[rows][cols];
+
+        for(int i = 0; i < rows; i++) {
+            for(int j = 0; j < cols; j++) {
+                output[i][j] = random.nextDouble();
+            }
+        }
+
+        return output;
+    }
+
+    public double [] generateRandomVector(int size, double bound) {
+        double [] output = new double[size];
+
+        for(int i = 0; i < size; i++) {
+            output[i] = random.nextDouble(bound);
+        }
+
+        return output;
+    }
+
+    public double [] generateOneValueVector(int size, double value) {
+        double [] output = new double[size];
+
+        Arrays.fill(output, value);
+
+        return output;
     }
 }

@@ -1,9 +1,8 @@
-package unit.initializer;
+package unit.initialization;
 
 import activation.ActivationFunc;
 import activation.LinearActivation;
-import initializer.LeCunInitializer;
-import org.junit.jupiter.api.BeforeEach;
+import initialization.LeCunInitializer;
 import org.junit.jupiter.api.Test;
 import structure.Layer;
 import structure.Scalar;

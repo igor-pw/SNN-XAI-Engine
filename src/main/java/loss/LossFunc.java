@@ -1,4 +1,8 @@
 package loss;
 
-public interface LossFunc {
+import structure.Scalar;
+
+public interface LossFunc
+{
+    double compute(Scalar [] predicted, double [] target);
 }

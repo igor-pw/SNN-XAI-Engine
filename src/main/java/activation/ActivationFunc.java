@@ -4,5 +4,5 @@ import structure.Scalar;
 
 public interface ActivationFunc
 {
-    void activate(Scalar[] value);
+    void activate(Scalar[] input);
 }
