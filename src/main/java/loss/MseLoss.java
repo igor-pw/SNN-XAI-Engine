@@ -18,4 +18,16 @@ public class MseLoss extends AbstractLossFunc
         return loss/size;
     }
 
+    @Override
+    public void derive(Scalar [] predicted, double [] target) {
+        validate(predicted, target);
+
+        int size = predicted.length;
+
+        for(int i = 0; i < size; i++) {
+            double grad = 2 * (predicted[i].getValue() - target[i]);
+            predicted[i].setGrad(grad);
+        }
+    }
+
 }

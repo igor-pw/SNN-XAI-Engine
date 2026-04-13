@@ -5,7 +5,7 @@ import structure.Scalar;
 
 public class Operator
 {
-    public Scalar add(Scalar x1, Scalar x2) {
+    public static Scalar add(Scalar x1, Scalar x2) {
         double x1_value = x1.getValue();
         double x2_value = x2.getValue();
 
@@ -15,7 +15,7 @@ public class Operator
         return result;
     }
 
-    public Scalar multiply(Scalar x1, Scalar x2) {
+    public static Scalar multiply(Scalar x1, Scalar x2) {
         double x1_value = x1.getValue();
         double x2_value = x2.getValue();
 
@@ -25,7 +25,7 @@ public class Operator
         return result;
     }
 
-    public Scalar [] activate(Scalar [] input, ActivationFunc activationFunc) {
+    public static Scalar [] activate(Scalar [] input, ActivationFunc activationFunc) {
         Scalar [] output = new Scalar[input.length];
 
         for(int i = 0; i < input.length; i++) {

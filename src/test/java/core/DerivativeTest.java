@@ -1,4 +1,4 @@
-package unit.core;
+package core;
 
 import activation.ActivationFunc;
 import activation.SeluActivation;
@@ -12,9 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DerivativeTest
 {
-    private final Operator operator = new Operator();
-    private final TestGenerator generator = new TestGenerator();
-
     @Test
     public void shouldUpdatePatentsGradToPositive_whenAddIsUsed() {
         //given
@@ -22,7 +19,7 @@ public class DerivativeTest
         Scalar parent2 = new Scalar();
 
         //when
-        Scalar y = operator.add(parent1, parent2);
+        Scalar y = Operator.add(parent1, parent2);
         y.setGrad(2.5);
 
         y.propagateGrad.run();
@@ -39,7 +36,7 @@ public class DerivativeTest
         Scalar parent2 = new Scalar();
 
         //when
-        Scalar x = operator.add(parent1, parent2);
+        Scalar x = Operator.add(parent1, parent2);
         x.setGrad(-0.275);
 
         x.propagateGrad.run();
@@ -59,8 +56,8 @@ public class DerivativeTest
         double expected = 0.5;
 
         //when
-        Scalar y2 = operator.add(x1, x2);
-        Scalar z = operator.add(y1, y2);
+        Scalar y2 = Operator.add(x1, x2);
+        Scalar z = Operator.add(y1, y2);
         z.setGrad(0.5);
 
         z.propagateGrad.run();
@@ -80,7 +77,7 @@ public class DerivativeTest
         Scalar x2 = new Scalar(2.0);
 
         //when
-        Scalar y = operator.multiply(x1, x2);
+        Scalar y = Operator.multiply(x1, x2);
         y.setGrad(1.125);
 
         y.propagateGrad.run();
@@ -97,7 +94,7 @@ public class DerivativeTest
         Scalar x2 = new Scalar(2.0);
 
         //when
-        Scalar y = operator.multiply(x1, x2);
+        Scalar y = Operator.multiply(x1, x2);
         y.setGrad(-0.625);
 
         y.propagateGrad.run();
@@ -114,7 +111,7 @@ public class DerivativeTest
         Scalar x2 = new Scalar(-2.0);
 
         //when
-        Scalar y = operator.multiply(x1, x2);
+        Scalar y = Operator.multiply(x1, x2);
         y.setGrad(-0.625);
 
         y.propagateGrad.run();
@@ -137,8 +134,8 @@ public class DerivativeTest
         double expected4 = 9.0;
 
         //when
-        Scalar y2 = operator.multiply(x1, x2);
-        Scalar z = operator.multiply(y1, y2);
+        Scalar y2 = Operator.multiply(x1, x2);
+        Scalar z = Operator.multiply(y1, y2);
         z.setGrad(1.0);
 
         z.propagateGrad.run();
@@ -158,7 +155,7 @@ public class DerivativeTest
         Scalar x = new Scalar(3.37541);
 
         //when
-        Scalar [] y = operator.activate(new Scalar[]{x}, selu);
+        Scalar [] y = Operator.activate(new Scalar[]{x}, selu);
         y[0].setGrad(1.7312);
 
         y[0].propagateGrad.run();
@@ -176,7 +173,7 @@ public class DerivativeTest
         double expected = -0.006816890923082;
 
         //when
-        Scalar [] y = operator.activate(new Scalar[]{x}, selu);
+        Scalar [] y = Operator.activate(new Scalar[]{x}, selu);
         y[0].setGrad(-0.1);
 
         y[0].propagateGrad.run();

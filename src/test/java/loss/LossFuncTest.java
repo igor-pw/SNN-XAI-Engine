@@ -1,7 +1,5 @@
-package unit.loss;
+package loss;
 
-import loss.AbstractLossFunc;
-import loss.LossFunc;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,16 +15,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class LossFuncTest
 {
-    protected TestGenerator generator = new TestGenerator();
-
     protected abstract AbstractLossFunc getLossFunc();
     protected abstract Stream<Arguments> provideReturnXCostTestData();
 
     @Test
     public void shouldReturnPositiveCost_whenComputeIsUsed() {
         //given
-        Scalar [] predicted = generator.initRandomScalarVector(20, 2.0);
-        double [] target = generator.generateRandomVector(20, 2.0);
+        Scalar [] predicted = TestGenerator.initRandomScalarVector(20, 1.0);
+        double [] target = TestGenerator.generateRandomVector(20, 1.0);
 
         //when
         double result = getLossFunc().compute(predicted, target);
@@ -50,11 +46,13 @@ public abstract class LossFuncTest
     @Test
     public void shouldThrowException_whenInputSizesAreDifferent() {
         //given
-        Scalar [] predicted = generator.initRandomScalarVector(5, 1.2);
-        double [] target = generator.generateRandomVector(6, 1.2);
+        Scalar [] predicted = TestGenerator.initRandomScalarVector(5, 1.2);
+        double [] target = TestGenerator.generateRandomVector(6, 1.2);
 
         //then
         assertThrows(IllegalArgumentException.class, () -> getLossFunc().compute(predicted, target));
     }
+
+    //derive tests
 
 }

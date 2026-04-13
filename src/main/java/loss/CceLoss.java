@@ -18,4 +18,18 @@ public class CceLoss extends AbstractLossFunc
 
         return -cost;
     }
+
+    @Override
+    public void derive(Scalar [] predicted, double [] target) {
+        validate(predicted, target);
+
+        int size = predicted.length;
+
+        for(int i = 0; i < size; i++) {
+            double grad = predicted[i].getValue() - target[i];
+
+            predicted[i].getParent()[0].setGrad(grad);
+            predicted[i].setGrad(1.0);
+        }
+    }
 }

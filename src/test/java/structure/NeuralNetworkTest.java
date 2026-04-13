@@ -1,9 +1,7 @@
-package unit.structure;
+package structure;
 
 import org.junit.jupiter.api.Test;
-import structure.Layer;
-import structure.NeuralNetwork;
-import structure.Scalar;
+import utils.TestGenerator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static utils.TestUtils.getResult;
@@ -15,10 +13,10 @@ public class NeuralNetworkTest extends StructureTest
         //given
         int [] structure = {10, 16, 8, 4};
         int layerNumber = structure.length - 1;
-        NeuralNetwork neuralNetwork = generator.initEqualsWeightsNeuralNetwork(structure, 0.5, linear);
+        NeuralNetwork neuralNetwork = TestGenerator.initEqualsWeightsNeuralNetwork(structure, 0.5, linear);
         Layer[] layer = neuralNetwork.getLayer();
 
-        Scalar[] input = generator.initRandomScalarVector(structure[0], 1.0);
+        Scalar[] input = TestGenerator.initRandomScalarVector(structure[0], 1.0);
         int [] expected = {16, 8, 4};
 
         //when
@@ -39,10 +37,10 @@ public class NeuralNetworkTest extends StructureTest
         //given
         int [] structure = {2, 4, 2};
         int layerNumber = structure.length - 1;
-        NeuralNetwork neuralNetwork = generator.initEqualsWeightsNeuralNetwork(structure, 0.5, linear);
+        NeuralNetwork neuralNetwork = TestGenerator.initEqualsWeightsNeuralNetwork(structure, 0.5, linear);
         Layer outputLayer = neuralNetwork.getLayer()[layerNumber - 1];
 
-        Scalar [] input = generator.initDefinedScalarVector(0.25, 0.75);
+        Scalar [] input = TestGenerator.initDefinedScalarVector(0.25, 0.75);
         double [] expected = {2.5, 2.5};
 
         //when

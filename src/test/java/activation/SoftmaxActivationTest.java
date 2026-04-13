@@ -1,7 +1,5 @@
-package unit.activation;
+package activation;
 
-import activation.ActivationFunc;
-import activation.SoftmaxActivation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 

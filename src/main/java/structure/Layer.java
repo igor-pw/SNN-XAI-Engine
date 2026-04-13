@@ -27,7 +27,6 @@ public class Layer
     }
 
     public Scalar [] forward(Scalar [] input) {
-        Operator operator = new Operator();
         int inputSize = input.length;
         int outputSize = output.length;
 
@@ -37,12 +36,12 @@ public class Layer
             output[i].setValue(bias[i].getValue());
 
             for (int j = 0; j < inputSize; j++) {
-                output[i] = operator.add(output[i], operator.multiply(weight[i][j], input[j]));
+                output[i] = Operator.add(output[i], Operator.multiply(weight[i][j], input[j]));
             }
 
         }
 
-        output = operator.activate(output, activation);
+        output = Operator.activate(output, activation);
 
         return output;
     }

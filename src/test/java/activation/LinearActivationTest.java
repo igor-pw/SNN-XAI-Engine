@@ -1,13 +1,7 @@
-package unit.activation;
+package activation;
 
-import activation.ActivationFunc;
-import activation.LinearActivation;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
-import structure.Scalar;
 
-import java.lang.invoke.VarHandle;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;

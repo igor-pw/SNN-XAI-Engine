@@ -1,4 +1,4 @@
-package unit.activation;
+package activation;
 
 import activation.ActivationFunc;
 import org.junit.jupiter.api.Test;

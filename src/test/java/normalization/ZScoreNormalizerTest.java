@@ -1,7 +1,5 @@
-package unit.normalization;
+package normalization;
 
-import normalization.Normalizer;
-import normalization.ZScoreNormalizer;
 import org.junit.jupiter.api.Test;
 import utils.TestGenerator;
 
@@ -11,12 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 public class ZScoreNormalizerTest
 {
     private final Normalizer zScore = new ZScoreNormalizer();
-    private final TestGenerator generator = new TestGenerator();
 
     @Test
     public void shouldReturnMatrix_whenNormalizeIsUsed() {
         //given
-        double [][] data = generator.generateRandomMatrix(2, 6);
+        double [][] data = TestGenerator.generateRandomMatrix(2, 6);
 
         //when
         double [][] result = zScore.normalize(data);
@@ -34,7 +31,7 @@ public class ZScoreNormalizerTest
         int rows = 4;
         int cols = 3;
 
-        double [][] data = generator.generateRandomMatrix(rows, cols);
+        double [][] data = TestGenerator.generateRandomMatrix(rows, cols);
 
         int expectedRows = 4;
         int expectedCols = 3;
@@ -52,7 +49,7 @@ public class ZScoreNormalizerTest
         //given
         int rows = 100;
         int cols = 20;
-        double [][] data = generator.generateRandomMatrix(rows, cols);
+        double [][] data = TestGenerator.generateRandomMatrix(rows, cols);
 
         double expectedMean = 0.0;
         double expectedStd = 1.0;

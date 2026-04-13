@@ -15,11 +15,11 @@ import java.util.Random;
 public class TestGenerator
 {
     private static final long SEED = 337609;
-    private Initializer lecun = new LeCunInitializer();
-    private AbstractLossFunc mse = new MseLoss();
-    private Random random = new Random(SEED);
+    private static Initializer lecun = new LeCunInitializer();
+    private static AbstractLossFunc mse = new MseLoss();
+    private static Random random = new Random(SEED);
 
-    public Layer initDefinedLayer(double [][] weight, double [] bias, ActivationFunc activationFunc) {
+    public static Layer initDefinedLayer(double [][] weight, double [] bias, ActivationFunc activationFunc) {
         int inputSize = weight[0].length;
         int outputSize = weight.length;
         Layer layer = new Layer(inputSize, outputSize, activationFunc);
@@ -35,7 +35,7 @@ public class TestGenerator
         return layer;
     }
 
-    public Layer initEqualWeightsLayer(int inputSize, int outputSize, double value, ActivationFunc activationFunc) {
+    public static Layer initEqualWeightsLayer(int inputSize, int outputSize, double value, ActivationFunc activationFunc) {
         Layer layer = new Layer(inputSize, outputSize, activationFunc);
 
         for(int i = 0; i < outputSize; i++) {
@@ -49,14 +49,14 @@ public class TestGenerator
         return layer;
     }
 
-    public Layer initRandomLayer(int inputSize, int outputSize, ActivationFunc activationFunc) {
+    public static Layer initRandomLayer(int inputSize, int outputSize, ActivationFunc activationFunc) {
         Layer layer = new Layer(inputSize, outputSize, activationFunc);
         lecun.initialize(layer);
 
         return layer;
     }
 
-    public Scalar [] initDefinedScalarVector(double... value) {
+    public static Scalar [] initDefinedScalarVector(double... value) {
         int size = value.length;
         Scalar [] result = new Scalar[size];
 
@@ -67,7 +67,7 @@ public class TestGenerator
         return result;
     }
 
-    public Scalar [] initOneValueScalarVector(int size, double value) {
+    public static Scalar [] initOneValueScalarVector(int size, double value) {
         Scalar [] result = new Scalar[size];
 
         for(int i = 0; i < size; i++) {
@@ -77,7 +77,7 @@ public class TestGenerator
         return result;
     }
 
-    public Scalar [] initRandomScalarVector(int size, double bound) {
+    public static Scalar [] initRandomScalarVector(int size, double bound) {
         Scalar [] result = new Scalar[size];
         double value;
 
@@ -90,7 +90,7 @@ public class TestGenerator
     }
 
 
-    public NeuralNetwork initDefinedNeuralNetwork(int [] structure, ActivationFunc activationFunc, double [][] bias, double [][] ... weight) {
+    public static NeuralNetwork initDefinedNeuralNetwork(int [] structure, ActivationFunc activationFunc, double [][] bias, double [][] ... weight) {
         int layerNumber = structure.length;
         NeuralNetwork neuralNetwork = new NeuralNetwork(structure, mse, activationFunc);
 
@@ -103,14 +103,14 @@ public class TestGenerator
         return neuralNetwork;
     }
 
-    public NeuralNetwork initRandomNeuralNetwork(int [] structure, ActivationFunc activationFunc) {
+    public static NeuralNetwork initRandomNeuralNetwork(int [] structure, ActivationFunc activationFunc) {
         NeuralNetwork neuralNetwork = new NeuralNetwork(structure, mse, activationFunc);
         neuralNetwork.initializeWeights(lecun);
 
         return neuralNetwork;
     }
 
-    public NeuralNetwork initEqualsWeightsNeuralNetwork(int [] structure, double value, ActivationFunc activationFunc) {
+    public static NeuralNetwork initEqualsWeightsNeuralNetwork(int [] structure, double value, ActivationFunc activationFunc) {
         int layerNumber = structure.length - 1;
         NeuralNetwork neuralNetwork = new NeuralNetwork(structure, mse, activationFunc);
 
@@ -123,7 +123,7 @@ public class TestGenerator
         return neuralNetwork;
     }
 
-    public double [][] generateRandomMatrix(int rows, int cols) {
+    public static double [][] generateRandomMatrix(int rows, int cols) {
         double [][] output = new double[rows][cols];
 
         for(int i = 0; i < rows; i++) {
@@ -135,7 +135,7 @@ public class TestGenerator
         return output;
     }
 
-    public double [] generateRandomVector(int size, double bound) {
+    public static double [] generateRandomVector(int size, double bound) {
         double [] output = new double[size];
 
         for(int i = 0; i < size; i++) {
@@ -145,7 +145,7 @@ public class TestGenerator
         return output;
     }
 
-    public double [] generateOneValueVector(int size, double value) {
+    public static double [] generateOneValueVector(int size, double value) {
         double [] output = new double[size];
 
         Arrays.fill(output, value);

@@ -1,4 +1,4 @@
-package unit.initialization;
+package initialization;
 
 import activation.ActivationFunc;
 import activation.LinearActivation;
@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class LeCunInitializerTest
 {
-    private final TestGenerator generator = new TestGenerator();
     private final ActivationFunc linear = new LinearActivation();
     private final LeCunInitializer lecun = new LeCunInitializer();
 

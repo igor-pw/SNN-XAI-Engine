@@ -17,8 +17,6 @@ import static utils.TestUtils.depthFirstSearch;
 
 public class ForwardPassTest
 {
-    private TestGenerator generator = new  TestGenerator();
-
     static Stream<Arguments> allActivation() {
         return Stream.of(
             Arguments.of(new SoftmaxActivation(), new double[]{0.0, 1.0}),
@@ -34,9 +32,9 @@ public class ForwardPassTest
         //given
         int[] structure = {784, 1024, 512, 256, 128, 64, 32, 16, 10};
         int layerNumber = structure.length - 1;
-        NeuralNetwork neuralNetwork = generator.initRandomNeuralNetwork(structure, outputActivation);
+        NeuralNetwork neuralNetwork = TestGenerator.initRandomNeuralNetwork(structure, outputActivation);
 
-        Scalar[] input = generator.initRandomScalarVector(structure[0], 5.0);
+        Scalar[] input = TestGenerator.initRandomScalarVector(structure[0], 5.0);
 
         int expectedSize = structure[layerNumber];
         double expectedSum = 1.0;
@@ -67,9 +65,9 @@ public class ForwardPassTest
         int[] structure = {10, 16, 8, 4};
         int layerNumber = structure.length - 1;
         ActivationFunc sigmoid = new SigmoidActivation();
-        NeuralNetwork neuralNetwork = generator.initRandomNeuralNetwork(structure, sigmoid);
+        NeuralNetwork neuralNetwork = TestGenerator.initRandomNeuralNetwork(structure, sigmoid);
 
-        Scalar [] input = generator.initRandomScalarVector(structure[0], 5.0);
+        Scalar [] input = TestGenerator.initRandomScalarVector(structure[0], 5.0);
         double expected = 11876;
 
         //when
@@ -77,7 +75,6 @@ public class ForwardPassTest
         Scalar [] output = neuralNetwork.getLayer()[layerNumber - 1].getOutput();
 
         int result = depthFirstSearch(output);
-        System.out.println("counter: " + result);
 
         //then
         assertEquals(expected, result);

@@ -1,7 +1,5 @@
-package unit.activation;
+package activation;
 
-import activation.ActivationFunc;
-import activation.ReluActivation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 
