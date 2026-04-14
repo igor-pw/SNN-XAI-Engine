@@ -8,7 +8,6 @@ import java.util.*;
 
 public class AutoGradEngine
 {
-
     public static void backward(Scalar[] predicted, double [] target, AbstractLossFunc lossFunc) {
         Deque<Scalar> topologicallySortedQueue = topologicalSort(predicted);
         prepareGrads(predicted, target, lossFunc);
@@ -35,35 +34,33 @@ public class AutoGradEngine
 
     static Deque<Scalar> topologicalSort(Scalar [] input) {
         Deque<Scalar> topologicallySortedQueue = new ArrayDeque<>();
-        Deque<Scalar> queue = new ArrayDeque<>();
-        Set<Scalar> visited = new HashSet<>();
+        Deque<Scalar> stack = new ArrayDeque<>();
+        Set<Scalar> discovered = new HashSet<>();
 
         for(Scalar scalar : input) {
-            queue.push(scalar);
+            if(!discovered.contains(scalar)) {
+                stack.push(scalar);
+            }
 
-            while(!queue.isEmpty()) {
-               Scalar current = queue.peek();
+            while(!stack.isEmpty()) {
+                Scalar current = stack.peek();
 
-               boolean allParentsVisited = true;
-               if (current.getParent() != null) {
-                   Scalar [] parents = current.getParent();
+                if(!discovered.contains(current)) {
+                    discovered.add(current);
 
-                   for(Scalar parent : parents) {
-                       if(visited.add(parent)) {
-                           queue.push(parent);
-                           allParentsVisited = false;
-                           break;
-                       }
-                   }
-               }
-
-               if(allParentsVisited) {
-                   topologicallySortedQueue.addFirst(queue.pop());
-               }
+                    if(current.getParent() != null) {
+                        for(Scalar parent : current.getParent()) {
+                            if(!discovered.contains(parent)) {
+                                stack.push(parent);
+                            }
+                        }
+                    }
+                } else {
+                    topologicallySortedQueue.addFirst(stack.pop());
+                }
             }
         }
 
-        System.out.println(topologicallySortedQueue);
         return topologicallySortedQueue;
     }
 

@@ -15,7 +15,7 @@ import java.util.Random;
 public class TestGenerator
 {
     private static final long SEED = 337609;
-    private static Initializer lecun = new LeCunInitializer();
+    private static Initializer lecun = new LeCunInitializer(337609);
     private static AbstractLossFunc mse = new MseLoss();
     private static Random random = new Random(SEED);
 

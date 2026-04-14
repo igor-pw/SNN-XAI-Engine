@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class LeCunInitializerTest
 {
     private final ActivationFunc linear = new LinearActivation();
-    private final LeCunInitializer lecun = new LeCunInitializer();
+    private final LeCunInitializer lecun = new LeCunInitializer(337609);
 
     @Test
     public void shouldInitializeNonZeroValues_whenInitializeIsUsed() {

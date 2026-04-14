@@ -30,9 +30,7 @@ public class Scalar
         hessian = 0.0;
         this.parent = new Scalar[parent.length];
 
-        for(int i = 0; i < parent.length; i++) {
-            this.parent[i] = parent[i];
-        }
+        System.arraycopy(parent, 0, this.parent, 0, parent.length);
     }
 
     public Scalar(Scalar scalar) {
@@ -44,9 +42,21 @@ public class Scalar
         parent[0] = scalar;
     }
 
+    public static Scalar [] toScalarArray(double [] value) {
+        int size = value.length;
+        Scalar [] scalar = new Scalar[size];
+
+        for(int i = 0; i < size; i++) {
+            scalar[i] = new Scalar(value[i]);
+        }
+
+        return scalar;
+    }
+
     public void setValue(double value) { this.value = value; }
     public double getValue() { return value; }
     public Scalar[] getParent() { return parent; }
+    public void setParent(Scalar [] parent) { this.parent = parent; }
     public void setGrad(double grad) { this.grad = grad; }
     public double getGrad() { return grad; }
     public void addGrad(double grad) { this.grad += grad; }

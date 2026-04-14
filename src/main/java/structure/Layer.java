@@ -21,7 +21,7 @@ public class Layer
                 weight[i][j] = new Scalar();
             }
 
-            bias[i] = new Scalar();
+            bias[i] = new Scalar(0.1);
             output[i] = new Scalar();
         }
     }

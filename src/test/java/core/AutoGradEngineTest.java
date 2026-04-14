@@ -42,16 +42,14 @@ public class AutoGradEngineTest
        Scalar y = Operator.add(m, b);
        Scalar [] output = Operator.activate(new Scalar[]{y}, new SeluActivation());
 
-       Scalar [] expectedVector = {output[0], y, b, m, x, w};
+       Scalar [] expectedVector = {output[0], y, m, w, x, b};
 
        //when
        Deque<Scalar> queue = AutoGradEngine.topologicalSort(output);
 
        //then
         for(Scalar expected : expectedVector) {
-            if(!queue.isEmpty()) {
-                assertSame(expected, queue.pop());
-            }
+            assertSame(expected, queue.pop());
         }
     }
 
