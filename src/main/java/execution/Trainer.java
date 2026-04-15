@@ -39,19 +39,26 @@ public class Trainer
         dataset.normalize(normalizer);
     }
 
+    public void toOneHotEncoding(int size) {
+        dataset.toOneHotEncoding(size);
+    }
+
     public void fit() {
         int datasetSize = dataset.getTarget().length;
 
         for(int i = 0; i < epoch; i++) {
-            //System.out.println("Epoch: " + i);
-            //dataset.shuffle();
+            int epochNumber = i + 1;
+            System.out.print("Epoch: " + epochNumber + ", ");
+            dataset.shuffle();
 
             for(int j = 0; j < datasetSize; j++) {
                 neuralNetwork.forward(Scalar.toScalarArray(dataset.getFeatures()[j]));
-                neuralNetwork.backward(new double[]{dataset.getTarget()[j]});
+                neuralNetwork.backward(dataset.getTarget()[j]);
                 neuralNetwork.updateNetwork(learningRate);
                 neuralNetwork.clearNetwork();
             }
+
+            System.out.println("loss: " + neuralNetwork.getCost());
         }
     }
 

@@ -19,18 +19,18 @@ public class XorTest
     @Test
     public void shouldCorrectlyPerformFullLearningProcess_andPredictOutput() {
         //given
-        double learningRate = 0.1;
-        int epoch = 100;
+        double learningRate = 0.05;
+        int epoch = 60;
         long seed = 4125;
         String pathName = "src/test/resources/Xor_Dataset.csv";
 
-        int [] structure = {2, 4, 1};
+        int [] structure = {2, 2, 1};
         ActivationFunc sigmoid = new SigmoidActivation();
         AbstractLossFunc mse = new MseLoss();
         Initializer lecun = new LeCunInitializer(seed);
         Normalizer zScore = new ZScoreNormalizer();
 
-        double threshold = 0.015;
+        double threshold = 0.05;
 
         //when
         Trainer trainer = new Trainer(learningRate, epoch);

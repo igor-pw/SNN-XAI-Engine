@@ -25,13 +25,13 @@ public class CsvReaderTest
         //when
         Dataset dataset = reader.read(fileName, skipLines);
         double [][] data = dataset.getFeatures();
-        double [] target = dataset.getTarget();
+        double [][] target = dataset.getTarget();
 
         //then
         assertNotEquals(null, data);
         assertNotEquals(null, data);
         assertTrue(data.length > 0);
-        assertTrue(target.length > 0);
+        assertTrue(target[0].length > 0);
     }
 
     @Test
@@ -46,7 +46,7 @@ public class CsvReaderTest
         //when
         Dataset dataset = reader.read(fileName, skipLines);
         double [][] data = dataset.getFeatures();
-        double [] target = dataset.getTarget();
+        double [][] target = dataset.getTarget();
 
         //then
         assertEquals(expectedDataSize[0], data.length);
@@ -75,7 +75,7 @@ public class CsvReaderTest
         //when
         Dataset dataset = reader.read(fileName, skipLines);
         double [][] data = dataset.getFeatures();
-        double [] target = dataset.getTarget();
+        double [][] target = dataset.getTarget();
 
        //then
        for(int i = 0; i < data.length; i++) {
@@ -83,7 +83,7 @@ public class CsvReaderTest
                assertEquals(expectedData[i][j], data[i][j]);
            }
 
-           assertEquals(expectedTarget[i], target[i]);
+           assertEquals(expectedTarget[i], target[i][0]);
        }
     }
 }

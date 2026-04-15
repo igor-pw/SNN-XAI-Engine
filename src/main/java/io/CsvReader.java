@@ -3,10 +3,12 @@ package io;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
+import com.opencsv.exceptions.CsvValidationException;
 import core.Dataset;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CsvReader implements DataReader
@@ -15,32 +17,33 @@ public class CsvReader implements DataReader
     public Dataset read(String filePath, int skipLines) {
         CSVReader reader = initCSVReader(filePath, skipLines);
 
-        List<String[]> line;
+        List<double[]> featuresList = new ArrayList<>();
+        List<double[]> targetList = new ArrayList<>();
 
         try {
-            line = reader.readAll();
-        } catch (CsvException | IOException e) {
-            throw new RuntimeException("Failed to read data stream from: " + filePath);
-        }
+            String[] nextLine;
+            while ((nextLine = reader.readNext()) != null) {
+                double[] rowFeatures = new double[nextLine.length - 1];
 
-        assert line != null;
-        double [][] features = new double[line.size()][line.get(0).length - 1];
-        double [] target = new double[line.size()];
+                for (int j = 0; j < nextLine.length - 1; j++) {
+                    rowFeatures[j] = Double.parseDouble(nextLine[j]);
+                }
 
-        for(int i = 0; i < line.size(); i++) {
-            for(int j = 0; j < line.get(i).length - 1; j++) {
-                features[i][j] = Double.parseDouble(line.get(i)[j]);
+                double[] rowTarget = { Double.parseDouble(nextLine[nextLine.length - 1]) };
+
+                featuresList.add(rowFeatures);
+                targetList.add(rowTarget);
+
             }
-
-            target[i] = Double.parseDouble(line.get(i)[line.get(i).length - 1]);
-        }
-
-        try {
             reader.close();
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to close file: " + filePath);
+        } catch (CsvValidationException | IOException e) {
+            throw new RuntimeException("Error reading line: " + e.getMessage());
         }
-        return new Dataset(features, target);
+
+        return new Dataset(
+                featuresList.toArray(new double[0][]),
+                targetList.toArray(new double[0][])
+        );
     }
 
     private CSVReader initCSVReader(String filePath, int skipLines) {

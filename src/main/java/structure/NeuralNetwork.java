@@ -56,7 +56,9 @@ public class NeuralNetwork
     }
 
     public void backward(double [] target) {
-        AutoGradEngine.backward(layer[layer.length - 1].getOutput(), target, lossFunc);
+        Scalar [] predicted = layer[layer.length - 1].getOutput();
+        cost = lossFunc.compute(predicted, target);
+        AutoGradEngine.backward(predicted, target, lossFunc);
     }
 
     public void updateNetwork(double learningRate) {
@@ -84,6 +86,6 @@ public class NeuralNetwork
     }
 
     public Layer [] getLayer() { return layer; }
-
+    public double getCost() { return cost; }
 
 }
