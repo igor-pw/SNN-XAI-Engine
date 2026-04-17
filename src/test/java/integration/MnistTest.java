@@ -1,13 +1,16 @@
 package integration;
 
 import activation.ActivationFunc;
+import activation.SigmoidActivation;
 import activation.SoftmaxActivation;
 import com.opencsv.CSVReader;
 import execution.Trainer;
 import initialization.Initializer;
 import initialization.LeCunInitializer;
 import loss.AbstractLossFunc;
+import loss.BceLoss;
 import loss.CceLoss;
+import loss.MseLoss;
 import normalization.Normalizer;
 import normalization.ZScoreNormalizer;
 import org.junit.jupiter.api.Disabled;
@@ -19,13 +22,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MnistTest {
 
-    @Disabled
+    @Test
     public void shouldPass() {
         //given
-        double learningRate = 0.000005;
-        int epoch = 1;
+        double learningRate = 0.00025;
+
+        int epoch = 20;
         int oneHotSize = 10;
-        long seed = 337609;
+        long seed = 42;
         String pathName = "src/test/resources/MNIST/mnist_test.csv";
 
         int[] structure = {784, 16, 10};
@@ -48,9 +52,9 @@ public class MnistTest {
 
         //when
         int predictSize = 100;
-        int [] expected = new int[100];
+        int [] expected = new int[predictSize];
         double [][] input = new double[predictSize][];
-        try (CSVReader reader = new CSVReader(new FileReader("src/test/resources/MNIST/mnist_test.csv"))) {
+        try (CSVReader reader = new CSVReader(new FileReader("src/test/resources/MNIST/mnist_train.csv"))) {
             String[] nextLine = reader.readNext();
             for(int i = 0; i < predictSize; i++) {
                 nextLine = reader.readNext();

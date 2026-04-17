@@ -15,7 +15,7 @@ public class Dataset
     }
 
     public void normalize(Normalizer normalizer) {
-        normalizer.normalize(features);
+        features = normalizer.normalize(features);
     }
 
     public void shuffle() {

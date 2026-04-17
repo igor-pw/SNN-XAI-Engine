@@ -32,7 +32,7 @@ public class ZScoreNormalizer implements Normalizer
             std = Math.sqrt(std);
 
             for(int j = 0; j < rows; j++) {
-                result [j][i] = (data[j][i] - mean) / (std);
+                result [j][i] = (data[j][i] - mean) / (std + 1e-15);
             }
 
             this.mean[i] = mean;

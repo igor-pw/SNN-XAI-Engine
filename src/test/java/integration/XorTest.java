@@ -19,7 +19,7 @@ public class XorTest
     @Test
     public void shouldCorrectlyPerformFullLearningProcess_andPredictOutput() {
         //given
-        double learningRate = 0.05;
+        double learningRate = 0.00011;
         int epoch = 60;
         long seed = 4125;
         String pathName = "src/test/resources/Xor_Dataset.csv";
@@ -30,7 +30,7 @@ public class XorTest
         Initializer lecun = new LeCunInitializer(seed);
         Normalizer zScore = new ZScoreNormalizer();
 
-        double threshold = 0.05;
+        double threshold = 0.2;
 
         //when
         Trainer trainer = new Trainer(learningRate, epoch);

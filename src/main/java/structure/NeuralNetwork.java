@@ -12,7 +12,7 @@ import java.util.List;
 
 public class NeuralNetwork
 {
-    private Layer[] layer;
+    private final Layer[] layer;
     private final List<Scalar> parameter = new ArrayList<>();
     private final AbstractLossFunc lossFunc;
     private double cost = 0.0;
@@ -59,7 +59,7 @@ public class NeuralNetwork
         Scalar [] predicted = layer[layer.length - 1].getOutput();
         cost = lossFunc.compute(predicted, target);
         AutoGradEngine.backward(predicted, target, lossFunc);
-    }
+     }
 
     public void updateNetwork(double learningRate) {
         for (Scalar scalar : parameter) {

@@ -33,7 +33,8 @@ public class Layer
         // ? inputSize = this.inputSize;
 
         for(int i = 0; i < outputSize; i++) {
-            output[i].setValue(bias[i].getValue());
+            //output[i].setValue(bias[i].getValue());
+            output[i] = bias[i];
 
             for (int j = 0; j < inputSize; j++) {
                 output[i] = Operator.add(output[i], Operator.multiply(weight[i][j], input[j]));
