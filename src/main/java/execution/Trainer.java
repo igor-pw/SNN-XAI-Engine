@@ -1,6 +1,7 @@
 package execution;
 
-import activation.ActivationFunc;
+import activation.HiddenActivation;
+import activation.OutputActivation;
 import core.Dataset;
 import initialization.Initializer;
 import io.CsvReader;
@@ -8,9 +9,8 @@ import io.DataReader;
 import loss.AbstractLossFunc;
 import normalization.Normalizer;
 import structure.NeuralNetwork;
+import structure.Neuron;
 import structure.Scalar;
-
-import java.util.function.IntPredicate;
 
 public class Trainer
 {
@@ -30,9 +30,10 @@ public class Trainer
         dataset = reader.read(pathName, skipLines);
     }
 
-    public void initNeuralNetwork(int [] structure, AbstractLossFunc lossFunc, ActivationFunc outputActivation, Initializer initializer) {
-        neuralNetwork = new NeuralNetwork(structure, lossFunc, outputActivation);
+    public void initNeuralNetwork(int [] structure, AbstractLossFunc lossFunc, HiddenActivation hiddenActivation, Initializer initializer) {
+        neuralNetwork = new NeuralNetwork(structure, lossFunc, hiddenActivation);
         neuralNetwork.initializeWeights(initializer);
+        neuralNetwork.prepareForward();
     }
 
     public void normalizeData(Normalizer normalizer) {
@@ -52,7 +53,7 @@ public class Trainer
             dataset.shuffle();
 
             for(int j = 0; j < datasetSize; j++) {
-                neuralNetwork.forward(Scalar.toScalarArray(dataset.getFeatures()[j]));
+                neuralNetwork.forward(dataset.getFeatures()[j]);
                 neuralNetwork.backward(dataset.getTarget()[j]);
                 neuralNetwork.updateNetwork(learningRate);
                 neuralNetwork.clearNetwork();
@@ -63,7 +64,7 @@ public class Trainer
     }
 
     public double [] predict(double [] input) {
-        Scalar [] scalarResult = neuralNetwork.forward(Scalar.toScalarArray(input));
+        Neuron[] scalarResult = neuralNetwork.forward(input);
         int size = scalarResult.length;
 
         double [] result = new double[size];

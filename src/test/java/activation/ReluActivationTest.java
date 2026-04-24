@@ -12,7 +12,7 @@ public class ReluActivationTest extends ActivationFuncTest
     private final ReluActivation relu = new ReluActivation();
 
     @Override
-    protected ActivationFunc getActivation() { return relu; }
+    protected HiddenActivation getActivation() { return relu; }
 
     @Override
     protected Stream<Arguments> provideUpdateToXTestData() {

@@ -13,7 +13,7 @@ public class SoftmaxActivationTest extends ActivationFuncTest {
     private final SoftmaxActivation softmax = new SoftmaxActivation();
 
     @Override
-    protected ActivationFunc getActivation() { return softmax; }
+    protected HiddenActivation getActivation() { return softmax; }
 
     @Override
     protected Stream<Arguments> provideUpdateToXTestData() {

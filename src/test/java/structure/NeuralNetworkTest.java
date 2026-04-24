@@ -16,7 +16,7 @@ public class NeuralNetworkTest extends StructureTest
         NeuralNetwork neuralNetwork = TestGenerator.initEqualsWeightsNeuralNetwork(structure, 0.5, linear);
         Layer[] layer = neuralNetwork.getLayer();
 
-        Scalar[] input = TestGenerator.initRandomScalarVector(structure[0], 1.0);
+        double [] input = TestGenerator.generateRandomVector(structure[0], 1.0);
         int [] expected = {16, 8, 4};
 
         //when
@@ -36,16 +36,14 @@ public class NeuralNetworkTest extends StructureTest
     public void shouldReturnVectorX_whenForwardIsUsed() {
         //given
         int [] structure = {2, 4, 2};
-        int layerNumber = structure.length - 1;
         NeuralNetwork neuralNetwork = TestGenerator.initEqualsWeightsNeuralNetwork(structure, 0.5, linear);
-        Layer outputLayer = neuralNetwork.getLayer()[layerNumber - 1];
 
-        Scalar [] input = TestGenerator.initDefinedScalarVector(0.25, 0.75);
+        double [] input = {0.25, 0.75};
         double [] expected = {2.5, 2.5};
 
         //when
-        neuralNetwork.forward(input);
-        double [] result = getResult(outputLayer.getOutput());
+        Scalar [] output = neuralNetwork.forward(input);
+        double [] result = getResult(output);
 
         //then
         for(int i = 0; i < expected.length; i++) {

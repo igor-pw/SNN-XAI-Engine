@@ -7,6 +7,8 @@ public class Scalar
     private double hessian;
     private Scalar[] parent;
 
+    public Runnable forwardOperator = null;
+
     public Runnable propagateGrad = null;
     public Runnable propagateHessian = null;
 
@@ -42,7 +44,7 @@ public class Scalar
         parent[0] = scalar;
     }
 
-    public static Scalar [] toScalarArray(double [] value) {
+    /*public static Scalar [] toScalarArray(double [] value) {
         int size = value.length;
         Scalar [] scalar = new Scalar[size];
 
@@ -51,7 +53,7 @@ public class Scalar
         }
 
         return scalar;
-    }
+    }*/
 
     public void setValue(double value) { this.value = value; }
     public double getValue() { return value; }

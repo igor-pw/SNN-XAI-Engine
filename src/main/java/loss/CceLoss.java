@@ -1,11 +1,12 @@
 package loss;
 
+import structure.Neuron;
 import structure.Scalar;
 
 public class CceLoss extends AbstractLossFunc
 {
     @Override
-    public double compute(Scalar[] predicted, double [] target) {
+    public double compute(Neuron[] predicted, double [] target) {
         validate(predicted, target);
 
         int size = predicted.length;
@@ -20,7 +21,7 @@ public class CceLoss extends AbstractLossFunc
     }
 
     @Override
-    public void derive(Scalar [] predicted, double [] target) {
+    public void derive(Neuron [] predicted, double [] target) {
         validate(predicted, target);
 
         int size = predicted.length;
@@ -28,8 +29,12 @@ public class CceLoss extends AbstractLossFunc
         for(int i = 0; i < size; i++) {
             double grad = predicted[i].getValue() - target[i];
 
-            predicted[i].getParent()[0].setGrad(grad);
-            predicted[i].setGrad(1.0);
+            for(int j = 0; j < predicted[i].getWeight().length; j++) {
+                predicted[i].getWeight()[j].setGrad(grad);
+                predicted[i].getInput()[j].setGrad(grad);
+                predicted[i].getBias().setGrad(grad);
+                predicted[i].setGrad(1.0);
+            }
         }
     }
 }

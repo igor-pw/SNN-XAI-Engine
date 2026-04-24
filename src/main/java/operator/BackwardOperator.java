@@ -1,19 +1,18 @@
-package core;
+package operator;
 
 import activation.SeluActivation;
 import structure.Scalar;
 
-public class Derivative
+public class BackwardOperator
 {
     public static Runnable add(Scalar scalar) {
         return () -> {
-            Scalar x1 = scalar.getParent()[0];
-            Scalar x2 = scalar.getParent()[1];
-
+            Scalar [] parent = scalar.getParent();
             double grad = scalar.getGrad();
 
-            x1.addGrad(grad);
-            x2.addGrad(grad);
+            for(Scalar nScalar : parent) {
+                nScalar.addGrad(grad);
+            }
         };
     }
 

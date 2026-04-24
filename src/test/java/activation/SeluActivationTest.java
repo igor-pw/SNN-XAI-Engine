@@ -12,7 +12,7 @@ public class SeluActivationTest extends ActivationFuncTest
     private final SeluActivation selu = new SeluActivation();
 
     @Override
-    protected ActivationFunc getActivation() { return selu; }
+    protected HiddenActivation getActivation() { return selu; }
 
     @Override
     protected Stream<Arguments> provideUpdateToXTestData() {

@@ -2,12 +2,15 @@ package activation;
 
 import structure.Scalar;
 
-public class LinearActivation implements ActivationFunc
+public class LinearActivation implements HiddenActivation
 {
     @Override
-    public void activate(Scalar[] input) {
-        if(input.length == 0) {
-            throw new IllegalArgumentException("Empty input");
-        }
+    public double activate(double input) {
+        return input;
+    }
+
+    @Override
+    public double derive(double input, double output) {
+        return 1.0;
     }
 }

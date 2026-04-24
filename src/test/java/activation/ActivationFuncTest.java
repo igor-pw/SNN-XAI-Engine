@@ -1,6 +1,5 @@
 package activation;
 
-import activation.ActivationFunc;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,7 +16,7 @@ import static utils.TestUtils.getResult;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class ActivationFuncTest
 {
-    protected abstract ActivationFunc getActivation();
+    protected abstract HiddenActivation getActivation();
     protected abstract Stream<Arguments> provideUpdateToXTestData();
     protected abstract Stream<Arguments> provideUpdateToVectorXTestData();
 

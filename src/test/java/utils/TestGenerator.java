@@ -1,6 +1,7 @@
 package utils;
 
-import activation.ActivationFunc;
+import activation.HiddenActivation;
+import activation.OutputActivation;
 import initialization.Initializer;
 import initialization.LeCunInitializer;
 import loss.AbstractLossFunc;
@@ -19,7 +20,7 @@ public class TestGenerator
     private static AbstractLossFunc mse = new MseLoss();
     private static Random random = new Random(SEED);
 
-    public static Layer initDefinedLayer(double [][] weight, double [] bias, ActivationFunc activationFunc) {
+    public static Layer initDefinedLayer(double [][] weight, double [] bias, HiddenActivation activationFunc) {
         int inputSize = weight[0].length;
         int outputSize = weight.length;
         Layer layer = new Layer(inputSize, outputSize, activationFunc);
@@ -35,7 +36,7 @@ public class TestGenerator
         return layer;
     }
 
-    public static Layer initEqualWeightsLayer(int inputSize, int outputSize, double value, ActivationFunc activationFunc) {
+    public static Layer initEqualWeightsLayer(int inputSize, int outputSize, double value, HiddenActivation activationFunc) {
         Layer layer = new Layer(inputSize, outputSize, activationFunc);
 
         for(int i = 0; i < outputSize; i++) {
@@ -49,7 +50,7 @@ public class TestGenerator
         return layer;
     }
 
-    public static Layer initRandomLayer(int inputSize, int outputSize, ActivationFunc activationFunc) {
+    public static Layer initRandomLayer(int inputSize, int outputSize, HiddenActivation activationFunc) {
         Layer layer = new Layer(inputSize, outputSize, activationFunc);
         lecun.initialize(layer);
 
@@ -90,7 +91,7 @@ public class TestGenerator
     }
 
 
-    public static NeuralNetwork initDefinedNeuralNetwork(int [] structure, ActivationFunc activationFunc, double [][] bias, double [][] ... weight) {
+    public static NeuralNetwork initDefinedNeuralNetwork(int [] structure, HiddenActivation activationFunc, double [][] bias, double [][] ... weight) {
         int layerNumber = structure.length;
         NeuralNetwork neuralNetwork = new NeuralNetwork(structure, mse, activationFunc);
 
@@ -103,14 +104,14 @@ public class TestGenerator
         return neuralNetwork;
     }
 
-    public static NeuralNetwork initRandomNeuralNetwork(int [] structure, ActivationFunc activationFunc) {
+    public static NeuralNetwork initRandomNeuralNetwork(int [] structure, HiddenActivation activationFunc) {
         NeuralNetwork neuralNetwork = new NeuralNetwork(structure, mse, activationFunc);
         neuralNetwork.initializeWeights(lecun);
 
         return neuralNetwork;
     }
 
-    public static NeuralNetwork initEqualsWeightsNeuralNetwork(int [] structure, double value, ActivationFunc activationFunc) {
+    public static NeuralNetwork initEqualsWeightsNeuralNetwork(int [] structure, double value, HiddenActivation activationFunc) {
         int layerNumber = structure.length - 1;
         NeuralNetwork neuralNetwork = new NeuralNetwork(structure, mse, activationFunc);
 

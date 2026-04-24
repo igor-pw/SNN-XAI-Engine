@@ -1,12 +1,13 @@
 package integration;
 
-import activation.ActivationFunc;
+import activation.HiddenActivation;
+import activation.LinearActivation;
+import activation.OutputActivation;
 import activation.SigmoidActivation;
 import execution.Trainer;
 import initialization.Initializer;
 import initialization.LeCunInitializer;
 import loss.AbstractLossFunc;
-import loss.BceLoss;
 import loss.MseLoss;
 import normalization.Normalizer;
 import normalization.ZScoreNormalizer;
@@ -25,7 +26,7 @@ public class XorTest
         String pathName = "src/test/resources/Xor_Dataset.csv";
 
         int [] structure = {2, 2, 1};
-        ActivationFunc sigmoid = new SigmoidActivation();
+        HiddenActivation linear = new LinearActivation();
         AbstractLossFunc mse = new MseLoss();
         Initializer lecun = new LeCunInitializer(seed);
         Normalizer zScore = new ZScoreNormalizer();
@@ -37,7 +38,7 @@ public class XorTest
 
         trainer.readData(pathName, 1);
         trainer.normalizeData(zScore);
-        trainer.initNeuralNetwork(structure, mse, sigmoid, lecun);
+        trainer.initNeuralNetwork(structure, mse, linear, lecun);
 
         trainer.fit();
         double [] result1 = trainer.predict(new double[]{0.0, 0.0});

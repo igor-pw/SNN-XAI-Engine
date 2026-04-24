@@ -1,9 +1,8 @@
 package structure;
 
-import activation.ActivationFunc;
+import activation.HiddenActivation;
 import activation.LinearActivation;
-import utils.TestGenerator;
 
 public class StructureTest {
-    protected ActivationFunc linear = new LinearActivation();
+    protected HiddenActivation linear = new LinearActivation();
 }

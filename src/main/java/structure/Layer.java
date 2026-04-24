@@ -1,19 +1,20 @@
 package structure;
 
-import activation.ActivationFunc;
-import core.Operator;
+import activation.HiddenActivation;
+import activation.OutputActivation;
+import operator.ForwardOperator;
 
 public class Layer
 {
-    private Scalar[][] weight;
+    private final Scalar[][] weight;
     private final Scalar[] bias;
-    private Scalar[] output;
-    private final ActivationFunc activation;
+    private final Neuron [] output;
+    private final HiddenActivation activation;
 
-    public Layer(int prevSize, int currentSize, ActivationFunc activation) {
+    public Layer(int prevSize, int currentSize, HiddenActivation activation) {
         weight = new Scalar[currentSize][prevSize];
         bias = new Scalar[currentSize];
-        output = new Scalar[currentSize];
+        output = new Neuron[currentSize];
         this.activation = activation;
 
         for (int i = 0; i < weight.length; i++) {
@@ -22,34 +23,13 @@ public class Layer
             }
 
             bias[i] = new Scalar(0.1);
-            output[i] = new Scalar();
         }
-    }
-
-    public Scalar [] forward(Scalar [] input) {
-        int inputSize = input.length;
-        int outputSize = output.length;
-
-        // ? inputSize = this.inputSize;
-
-        for(int i = 0; i < outputSize; i++) {
-            //output[i].setValue(bias[i].getValue());
-            output[i] = bias[i];
-
-            for (int j = 0; j < inputSize; j++) {
-                output[i] = Operator.add(output[i], Operator.multiply(weight[i][j], input[j]));
-            }
-
-        }
-
-        output = Operator.activate(output, activation);
-
-        return output;
     }
 
     public int getOutputSize() { return weight.length; }
     public int getInputSize() { return weight[0].length; }
     public Scalar [][] getWeight() { return weight; }
     public Scalar [] getBias() { return bias; }
-    public Scalar [] getOutput() { return output; }
+    public Neuron [] getOutput() { return output; }
+    public HiddenActivation getActivation() { return activation; }
 }

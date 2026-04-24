@@ -1,21 +1,20 @@
 package core;
 
 import activation.*;
+import operator.ForwardOperator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.aggregator.ArgumentAccessException;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import structure.Scalar;
 
-import java.lang.reflect.AccessibleObject;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OperatorTest
 {
-    private final Operator operator = new Operator();
+    private final ForwardOperator operator = new ForwardOperator();
 
     @Test
     public void shouldReturnScalarWithValueX_whenAddIsUsed() {
@@ -125,7 +124,7 @@ public class OperatorTest
 
     @ParameterizedTest
     @MethodSource("allActivation")
-    public void shouldCorrectlyReturnScalarWithXValue_whenActivateIsUsed(ActivationFunc activationFunc, double [] expected, double delta) {
+    public void shouldCorrectlyReturnScalarWithXValue_whenActivateIsUsed(HiddenActivation activationFunc, double [] expected, double delta) {
         //given
         Scalar [] x = {new Scalar(-2.351), new Scalar(0.0), new Scalar(3.14)};
 

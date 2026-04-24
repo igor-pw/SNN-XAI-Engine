@@ -8,10 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class LinearActivationTest extends ActivationFuncTest
 {
-    private final ActivationFunc linear = new LinearActivation();
+    private final HiddenActivation linear = new LinearActivation();
 
     @Override
-    protected ActivationFunc getActivation() { return linear; }
+    protected HiddenActivation getActivation() { return linear; }
 
     @Override
     protected Stream<Arguments> provideUpdateToXTestData() {

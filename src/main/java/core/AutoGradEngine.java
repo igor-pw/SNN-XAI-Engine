@@ -1,6 +1,7 @@
 package core;
 
 import loss.AbstractLossFunc;
+import structure.Neuron;
 import structure.Scalar;
 
 import java.util.*;
@@ -8,20 +9,18 @@ import java.util.*;
 
 public class AutoGradEngine
 {
-    public static void backward(Scalar[] predicted, double [] target, AbstractLossFunc lossFunc) {
-        Deque<Scalar> topologicallySortedQueue = topologicalSort(predicted);
+    public static void backward(Neuron [] computationalGraph, Neuron [] predicted, double [] target, AbstractLossFunc lossFunc) {
+        //Deque<Scalar> topologicallySortedQueue = topologicalSort(predicted);
         prepareGrads(predicted, target, lossFunc);
 
-        while(!topologicallySortedQueue.isEmpty()) {
-            Scalar current = topologicallySortedQueue.pop();
-            if(current.getParent() != null) {
-                current.propagateGrad.run();
-            }
+        //while(!topologicallySortedQueue.isEmpty()) {
+        for(int i = computationalGraph.length - 1; i >= 0; i--) {
+                computationalGraph[i].backward();
         }
     }
 
     //for tests
-    public static void backward(Scalar[] predicted) {
+    /*public static void backward(Scalar[] predicted) {
         Deque<Scalar> topologicallySortedQueue = topologicalSort(predicted);
 
         while(!topologicallySortedQueue.isEmpty()) {
@@ -30,9 +29,9 @@ public class AutoGradEngine
                 current.propagateGrad.run();
             }
         }
-    }
+    }*/
 
-    static Deque<Scalar> topologicalSort(Scalar [] input) {
+    /*static Deque<Scalar> topologicalSort(Scalar [] input) {
         Deque<Scalar> topologicallySortedQueue = new ArrayDeque<>();
         Deque<Scalar> stack = new ArrayDeque<>();
         Set<Scalar> discovered = new HashSet<>();
@@ -62,9 +61,9 @@ public class AutoGradEngine
         }
 
         return topologicallySortedQueue;
-    }
+    }*/
 
-    static void prepareGrads(Scalar [] predicted, double [] target, AbstractLossFunc lossFunc) {
+    static void prepareGrads(Neuron [] predicted, double [] target, AbstractLossFunc lossFunc) {
         lossFunc.derive(predicted, target);
     }
 }

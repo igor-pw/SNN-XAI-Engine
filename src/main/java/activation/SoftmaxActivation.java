@@ -1,25 +1,37 @@
 package activation;
 
+import operator.SoftmaxOperator;
 import structure.Scalar;
 
-public class SoftmaxActivation implements ActivationFunc
+public class SoftmaxActivation implements OutputActivation
 {
     @Override
-    public void activate(Scalar[] input) {
+    public double [] activate(double [] input) {
+        int size = input.length;
+        double [] result = new double[size];
         double denominator = 0.0;
 
-        if(input.length == 0) {
-            throw new IllegalArgumentException("Empty input");
+        for(double value : input) {
+            denominator += Math.exp(value);
         }
 
-         for(Scalar scalar : input) {
-             denominator += Math.exp(scalar.getValue());
-         }
+        for(int i = 0; i < size; i++) {
+            result[i] = Math.exp(input[i]) / denominator;
+        }
 
-         for(Scalar scalar : input) {
-             double currentValue = scalar.getValue();
-             double newValue = Math.exp(currentValue) / denominator;
-             scalar.setValue(newValue);
-         }
+        return result;
+    }
+
+    @Override
+    public double [] derive(double [] input, double [] output) {
+        int size = input.length;
+        double [] result = new double[size];
+
+        for(int i = 0; i < size; i++) {
+            result[i] = output[i] - input[i];
+        }
+
+        return result;
     }
 }
+

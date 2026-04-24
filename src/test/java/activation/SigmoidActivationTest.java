@@ -12,7 +12,7 @@ public class SigmoidActivationTest extends ActivationFuncTest
     private final SigmoidActivation sigmoid = new SigmoidActivation();
 
     @Override
-    protected ActivationFunc getActivation() { return sigmoid; }
+    protected HiddenActivation getActivation() { return sigmoid; }
 
     @Override
     protected Stream<Arguments> provideUpdateToXTestData() {
