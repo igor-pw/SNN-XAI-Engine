@@ -1,19 +1,18 @@
 package activation;
-
+import structure.Neuron;
 import structure.Scalar;
 
 public class ReluActivation implements OutputActivation
 {
     @Override
-    public double [] activate(double [] input) {
+    public void activate(Neuron[] input) {
         int size = input.length;
-        double [] result = new double[size];
+        double result;
 
         for(int i = 0; i < size; i++) {
-            result[i] = Math.max(input[i], 0.0);
+            result = Math.max(input[i].getValue(), 0.0);
+            input[i].setValue(result);
         }
-
-        return result;
     }
 
     @Override

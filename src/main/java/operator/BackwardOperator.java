@@ -5,7 +5,7 @@ import structure.Scalar;
 
 public class BackwardOperator
 {
-    public static Runnable add(Scalar scalar) {
+    /*public static Runnable add(Scalar scalar) {
         return () -> {
             Scalar [] parent = scalar.getParent();
             double grad = scalar.getGrad();
@@ -37,5 +37,5 @@ public class BackwardOperator
 
             x.addGrad(derivative * grad);
         };
-    }
+    }*/
 }

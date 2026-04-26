@@ -91,7 +91,7 @@ public class TestGenerator
     }
 
 
-    public static NeuralNetwork initDefinedNeuralNetwork(int [] structure, HiddenActivation activationFunc, double [][] bias, double [][] ... weight) {
+    /*public static NeuralNetwork initDefinedNeuralNetwork(int [] structure, HiddenActivation activationFunc, double [][] bias, double [][] ... weight) {
         int layerNumber = structure.length;
         NeuralNetwork neuralNetwork = new NeuralNetwork(structure, mse, activationFunc);
 
@@ -122,7 +122,7 @@ public class TestGenerator
         }
 
         return neuralNetwork;
-    }
+    }*/
 
     public static double [][] generateRandomMatrix(int rows, int cols) {
         double [][] output = new double[rows][cols];

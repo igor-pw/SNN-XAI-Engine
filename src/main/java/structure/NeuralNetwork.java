@@ -17,21 +17,24 @@ public class NeuralNetwork
     private final Layer[] layer;
     private final List<Scalar> parameter = new ArrayList<>();
     private final AbstractLossFunc lossFunc;
+    private final OutputActivation outputActivation;
     private final ComputationalGraph computationalGraph = new ComputationalGraph();
     private double cost = 0.0;
 
-    public NeuralNetwork(int[] structure, AbstractLossFunc lossFunc, HiddenActivation hiddenActivation) {
+    public NeuralNetwork(int[] structure, AbstractLossFunc lossFunc, OutputActivation outputActivation) {
+        this.outputActivation = outputActivation;
         int layerNumber = structure.length - 1;
         layer = new Layer[layerNumber];
         this.lossFunc = lossFunc;
 
         HiddenActivation selu = new SeluActivation();
+        HiddenActivation linear = new LinearActivation();
 
         for(int i = 0; i < layerNumber - 1; i++) {
             layer[i] = new Layer(structure[i], structure[i+1], selu);
         }
 
-        layer[layerNumber - 1] = new Layer(structure[layerNumber - 1], structure[layerNumber], hiddenActivation);
+        layer[layerNumber - 1] = new Layer(structure[layerNumber - 1], structure[layerNumber], linear);
 
         for(Layer nLayer : layer) {
             Scalar [][] weight = nLayer.getWeight();
@@ -55,19 +58,16 @@ public class NeuralNetwork
 
     public Neuron [] forward(double [] input) {
         computationalGraph.forward(input);
-        return layer[layer.length - 1].getOutput();
-        /*Scalar [] output = layer[0].forward(input);
-        for(int i = 1; i < layer.length; i++) {
-            output = layer[i].forward(output);
-        }
-        return output;*/
+        Neuron [] predicted = layer[layer.length - 1].getOutput();
+        outputActivation.activate(predicted);
+        return predicted;
     }
 
     public void backward(double [] target) {
         Neuron [] predicted = layer[layer.length - 1].getOutput();
         cost = lossFunc.compute(predicted, target);
         AutoGradEngine.backward(computationalGraph.getGraph(), predicted, target, lossFunc);
-     }
+    }
 
     public void updateNetwork(double learningRate) {
         for (Scalar scalar : parameter) {
@@ -76,17 +76,15 @@ public class NeuralNetwork
 
             scalar.setValue(newWeight);
         }
+
     }
 
     public void clearNetwork() {
         for(Scalar scalar : parameter) {
             scalar.setGrad(0.0);
-            scalar.setParent(null);
         }
 
-        for(Layer nLayer : layer) {
-            Neuron [] output = nLayer.getOutput();
-        }
+        computationalGraph.clearGraph();
     }
 
     public Layer [] getLayer() { return layer; }

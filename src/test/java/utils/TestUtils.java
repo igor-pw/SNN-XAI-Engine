@@ -18,16 +18,16 @@ public class TestUtils
       return result;
    }
 
-   static public int depthFirstSearch(Scalar [] output) {
+   /*static public int depthFirstSearch(Scalar [] output) {
       AtomicInteger counter = new AtomicInteger(0);
       for (Scalar scalar : output) {
            depthFirstSearch(scalar, counter);
        }
 
       return counter.get();
-   }
+   }*/
 
-   static private void depthFirstSearch(Scalar scalar, AtomicInteger counter) {
+   /*static private void depthFirstSearch(Scalar scalar, AtomicInteger counter) {
       if(scalar.getParent() == null || scalar.getValue() == Double.MAX_VALUE) {
          return;
       }
@@ -37,5 +37,5 @@ public class TestUtils
       }
 
       counter.incrementAndGet();
-   }
+   }*/
 }

@@ -28,13 +28,7 @@ public class CceLoss extends AbstractLossFunc
 
         for(int i = 0; i < size; i++) {
             double grad = predicted[i].getValue() - target[i];
-
-            for(int j = 0; j < predicted[i].getWeight().length; j++) {
-                predicted[i].getWeight()[j].setGrad(grad);
-                predicted[i].getInput()[j].setGrad(grad);
-                predicted[i].getBias().setGrad(grad);
-                predicted[i].setGrad(1.0);
-            }
+            predicted[i].setGrad(grad);
         }
     }
 }

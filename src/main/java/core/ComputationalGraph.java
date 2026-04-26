@@ -38,9 +38,6 @@ public class ComputationalGraph
 
             int outputSize = output.length;
 
-            // ? inputSize = this.inputSize;
-
-
             for(int i = 0; i < outputSize; i++) {
                 output[i] = new Neuron(weight[i], input, bias[i], activationFunc);
                 computationalGraph[counter++] = output[i];
@@ -49,7 +46,7 @@ public class ComputationalGraph
             input = new Neuron[outputSize];
 
             for(int i = 0; i < outputSize; i++) {
-                input[i] = new Neuron();
+                input[i] = computationalGraph[counter - outputSize + i];
             }
         }
     }
@@ -61,6 +58,13 @@ public class ComputationalGraph
 
         for(Neuron neuron : computationalGraph) {
             neuron.forward();
+        }
+    }
+
+    public void clearGraph() {
+        for(Neuron neuron : computationalGraph) {
+            neuron.setValue(0.0);
+            neuron.setGrad(0.0);
         }
     }
 

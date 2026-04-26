@@ -1,25 +1,25 @@
 package activation;
 
 import operator.SoftmaxOperator;
+import structure.Neuron;
 import structure.Scalar;
 
 public class SoftmaxActivation implements OutputActivation
 {
     @Override
-    public double [] activate(double [] input) {
+    public void activate(Neuron[] input) {
         int size = input.length;
-        double [] result = new double[size];
+        double result;
         double denominator = 0.0;
 
-        for(double value : input) {
-            denominator += Math.exp(value);
+        for(Neuron neuron : input) {
+            denominator += Math.exp(neuron.getValue());
         }
 
         for(int i = 0; i < size; i++) {
-            result[i] = Math.exp(input[i]) / denominator;
-        }
-
-        return result;
+            result = Math.exp(input[i].getValue()) / denominator + EPSILON;
+            input[i].setValue(result);
+            }
     }
 
     @Override

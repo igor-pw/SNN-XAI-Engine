@@ -30,8 +30,8 @@ public class Trainer
         dataset = reader.read(pathName, skipLines);
     }
 
-    public void initNeuralNetwork(int [] structure, AbstractLossFunc lossFunc, HiddenActivation hiddenActivation, Initializer initializer) {
-        neuralNetwork = new NeuralNetwork(structure, lossFunc, hiddenActivation);
+    public void initNeuralNetwork(int [] structure, AbstractLossFunc lossFunc, OutputActivation outputActivation, Initializer initializer) {
+        neuralNetwork = new NeuralNetwork(structure, lossFunc, outputActivation);
         neuralNetwork.initializeWeights(initializer);
         neuralNetwork.prepareForward();
     }
