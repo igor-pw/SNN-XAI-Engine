@@ -1,34 +1,40 @@
 package structure;
 
-import activation.ActivationFunc;
+import activation.HiddenActivation;
+import activation.LinearActivation;
+import activation.OutputActivation;
 import activation.SeluActivation;
 import core.AutoGradEngine;
+import core.ComputationalGraph;
 import initialization.Initializer;
 import loss.AbstractLossFunc;
-import loss.LossFunc;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class NeuralNetwork
 {
-    private Layer[] layer;
+    private final Layer[] layer;
     private final List<Scalar> parameter = new ArrayList<>();
     private final AbstractLossFunc lossFunc;
+    private final OutputActivation outputActivation;
+    private final ComputationalGraph computationalGraph = new ComputationalGraph();
     private double cost = 0.0;
 
-    public NeuralNetwork(int[] structure, AbstractLossFunc lossFunc, ActivationFunc outputActivation) {
+    public NeuralNetwork(int[] structure, AbstractLossFunc lossFunc, OutputActivation outputActivation) {
+        this.outputActivation = outputActivation;
         int layerNumber = structure.length - 1;
         layer = new Layer[layerNumber];
         this.lossFunc = lossFunc;
 
-        SeluActivation hiddenActivation = new SeluActivation();
+        HiddenActivation selu = new SeluActivation();
+        HiddenActivation linear = new LinearActivation();
 
         for(int i = 0; i < layerNumber - 1; i++) {
-            layer[i] = new Layer(structure[i], structure[i+1], hiddenActivation);
+            layer[i] = new Layer(structure[i], structure[i+1], selu);
         }
 
-        layer[layerNumber - 1] = new Layer(structure[layerNumber - 1], structure[layerNumber], outputActivation);
+        layer[layerNumber - 1] = new Layer(structure[layerNumber - 1], structure[layerNumber], linear);
 
         for(Layer nLayer : layer) {
             Scalar [][] weight = nLayer.getWeight();
@@ -46,17 +52,21 @@ public class NeuralNetwork
         initializer.initialize(layer);
     }
 
-    public Scalar [] forward(Scalar [] input) {
-        Scalar [] output = layer[0].forward(input);
-        for(int i = 1; i < layer.length; i++) {
-            output = layer[i].forward(output);
-        }
+    public void prepareForward() {
+        computationalGraph.buildComputationalGraph(layer, layer[0].getInputSize());
+    }
 
-        return output;
+    public Neuron [] forward(double [] input) {
+        computationalGraph.forward(input);
+        Neuron [] predicted = layer[layer.length - 1].getOutput();
+        outputActivation.activate(predicted);
+        return predicted;
     }
 
     public void backward(double [] target) {
-        AutoGradEngine.backward(layer[layer.length - 1].getOutput(), target, lossFunc);
+        Neuron [] predicted = layer[layer.length - 1].getOutput();
+        cost = lossFunc.compute(predicted, target);
+        AutoGradEngine.backward(computationalGraph.getGraph(), predicted, target, lossFunc, outputActivation);
     }
 
     public void updateNetwork(double learningRate) {
@@ -64,26 +74,13 @@ public class NeuralNetwork
             double oldWeight = scalar.getValue();
             double newWeight = oldWeight - scalar.getGrad() * learningRate;
 
-            scalar.setValue(newWeight);
-        }
-    }
-
-    public void clearNetwork() {
-        for(Scalar scalar : parameter) {
-            scalar.setGrad(0.0);
-            scalar.setParent(null);
+            scalar.updateValue(newWeight);
         }
 
-        for(Layer nLayer : layer) {
-            Scalar [] output = nLayer.getOutput();
-
-            for(Scalar scalar : output) {
-                scalar.setParent(null);
-            }
-        }
+        computationalGraph.clearGraph();
     }
 
     public Layer [] getLayer() { return layer; }
-
+    public double getCost() { return cost; }
 
 }

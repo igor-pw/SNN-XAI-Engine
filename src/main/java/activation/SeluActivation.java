@@ -2,23 +2,18 @@ package activation;
 
 import structure.Scalar;
 
-public class SeluActivation implements ActivationFunc
+public class SeluActivation implements HiddenActivation
 {
     public final static double lambda = 1.0507009873554804934193349852946;
     public final static double alfa = 1.6732632423543772848170429916717;
 
     @Override
-    public void activate(Scalar[] input) {
-        if(input.length == 0) {
-            throw new IllegalArgumentException("Empty input");
-        }
+    public double activate(double input) {
+        return input > 0.0 ? lambda * input : lambda * alfa * (Math.exp(input) - 1);
+    }
 
-        for(Scalar scalar : input) {
-            double currentValue = scalar.getValue();
-            double newValue;
-
-            newValue = currentValue > 0.0 ? lambda * currentValue : alfa * lambda * (Math.exp(currentValue) - 1);
-            scalar.setValue(newValue);
-        }
+    @Override
+    public double derive(double input, double output) {
+        return input > 0.0 ? lambda : lambda * alfa * Math.exp(input);
     }
 }

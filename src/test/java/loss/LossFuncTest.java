@@ -5,6 +5,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import structure.Neuron;
 import structure.Scalar;
 import utils.TestGenerator;
 
@@ -21,7 +22,7 @@ public abstract class LossFuncTest
     @Test
     public void shouldReturnPositiveCost_whenComputeIsUsed() {
         //given
-        Scalar [] predicted = TestGenerator.initRandomScalarVector(20, 1.0);
+        Neuron[] predicted = TestGenerator.initRandomNeuronVector(20, 1.0);
         double [] target = TestGenerator.generateRandomVector(20, 1.0);
 
         //when
@@ -33,7 +34,7 @@ public abstract class LossFuncTest
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideReturnXCostTestData")
-    public void shouldReturnXCost_whenComputeIsUsed(String description, Scalar[] predicted, double [] target, double expected, double delta) {
+    public void shouldReturnXCost_whenComputeIsUsed(String description, Neuron [] predicted, double [] target, double expected, double delta) {
         //given
 
         //when
@@ -46,7 +47,7 @@ public abstract class LossFuncTest
     @Test
     public void shouldThrowException_whenInputSizesAreDifferent() {
         //given
-        Scalar [] predicted = TestGenerator.initRandomScalarVector(5, 1.2);
+        Neuron [] predicted = TestGenerator.initRandomNeuronVector(5, 1.2);
         double [] target = TestGenerator.generateRandomVector(6, 1.2);
 
         //then

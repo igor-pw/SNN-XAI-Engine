@@ -2,3 +2,4 @@ Dokumentacja/
 SNN-XAI-Engine.iml
 target/
 .idea/
+src/test/resources/MNIST/mnist_train.csv

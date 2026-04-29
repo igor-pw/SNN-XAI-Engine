@@ -1,11 +1,12 @@
 package loss;
 
+import structure.Neuron;
 import structure.Scalar;
 
 public class MseLoss extends AbstractLossFunc
 {
     @Override
-    public double compute(Scalar [] predicted, double [] target) {
+    public double compute(Neuron[] predicted, double [] target) {
         validate(predicted, target);
 
         int size = predicted.length;
@@ -19,7 +20,7 @@ public class MseLoss extends AbstractLossFunc
     }
 
     @Override
-    public void derive(Scalar [] predicted, double [] target) {
+    public void derive(Neuron [] predicted, double [] target) {
         validate(predicted, target);
 
         int size = predicted.length;

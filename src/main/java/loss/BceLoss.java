@@ -1,11 +1,12 @@
 package loss;
 
+import structure.Neuron;
 import structure.Scalar;
 
 public class BceLoss extends AbstractLossFunc
 {
     @Override
-    public double compute(Scalar[] predicted, double [] target) {
+    public double compute(Neuron [] predicted, double [] target) {
         validate(predicted, target);
 
         int size = predicted.length;
@@ -16,18 +17,20 @@ public class BceLoss extends AbstractLossFunc
             cost += (target[i] * Math.log(value) + (1 - target[i]) * Math.log(1 - value));
         }
 
+        if(Double.isNaN(cost)) {
+        }
+
         return -cost/size;
     }
 
     @Override
-    public void derive(Scalar [] predicted, double [] target) {
+    public void derive(Neuron[] predicted, double [] target) {
         validate(predicted, target);
 
         int size = predicted.length;
 
         for(int i = 0; i < size; i++) {
-            double predictedValue = predicted[i].getValue();
-            double grad = (predictedValue - target[i]) / (predictedValue * (1 - predictedValue));
+            double grad = predicted[i].getValue() - target[i];
             predicted[i].setGrad(grad);
         }
     }

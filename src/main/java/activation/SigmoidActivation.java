@@ -1,19 +1,23 @@
 package activation;
 
+import structure.Neuron;
 import structure.Scalar;
 
-public class SigmoidActivation implements ActivationFunc
+public class SigmoidActivation implements OutputActivation
 {
     @Override
-    public void activate(Scalar[] input) {
-        if(input.length == 0) {
-            throw new IllegalArgumentException("Empty input");
-        }
+    public void activate(Neuron[] input) {
+        int size = input.length;
+        double result;
 
-        for(Scalar scalar : input) {
-            double currentValue = scalar.getValue();
-            double newValue = 1/(1+Math.exp(-currentValue));
-            scalar.setValue(newValue);
+        for(int i = 0; i < size; i++) {
+            result = 1 / (1 + Math.exp(-input[i].getValue()));
+            input[i].setValue(result);
         }
+    }
+
+    @Override
+    public void derive(Neuron [] predicted, double [] target) {
+        return;
     }
 }

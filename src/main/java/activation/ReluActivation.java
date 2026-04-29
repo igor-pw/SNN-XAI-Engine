@@ -1,18 +1,26 @@
 package activation;
-
+import structure.Neuron;
 import structure.Scalar;
 
-public class ReluActivation implements ActivationFunc
+public class ReluActivation implements OutputActivation
 {
-    public void activate(Scalar[] input) {
-        if(input.length == 0) {
-            throw new IllegalArgumentException("Empty input");
-        }
+    @Override
+    public void activate(Neuron[] input) {
+        int size = input.length;
+        double result;
 
-        for(Scalar scalar : input) {
-            if(scalar.getValue() < 0) {
-                scalar.setValue(0.0);
-            }
+        for(int i = 0; i < size; i++) {
+            result = Math.max(input[i].getValue(), 0.0);
+            input[i].setValue(result);
+        }
+    }
+
+    @Override
+    public void derive(Neuron [] input, double [] output) {
+        int size = input.length;
+
+        for(int i = 0; i < size; i++) {
+            input[i].multiplyGrad(input[i].getValue() > 0.0 ? 1.0 : 0.0);
         }
     }
 }

@@ -1,18 +1,16 @@
 package initialization;
 
-import activation.ActivationFunc;
+import activation.HiddenActivation;
 import activation.LinearActivation;
-import initialization.LeCunInitializer;
 import org.junit.jupiter.api.Test;
 import structure.Layer;
 import structure.Scalar;
-import utils.TestGenerator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LeCunInitializerTest
 {
-    private final ActivationFunc linear = new LinearActivation();
+    private final HiddenActivation linear = new LinearActivation();
     private final LeCunInitializer lecun = new LeCunInitializer(337609);
 
     @Test

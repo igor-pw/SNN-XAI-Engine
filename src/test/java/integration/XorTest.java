@@ -1,7 +1,6 @@
 package integration;
 
-import activation.ActivationFunc;
-import activation.SigmoidActivation;
+import activation.*;
 import execution.Trainer;
 import initialization.Initializer;
 import initialization.LeCunInitializer;
@@ -12,6 +11,7 @@ import normalization.Normalizer;
 import normalization.ZScoreNormalizer;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XorTest
@@ -20,17 +20,18 @@ public class XorTest
     public void shouldCorrectlyPerformFullLearningProcess_andPredictOutput() {
         //given
         double learningRate = 0.1;
-        int epoch = 100;
-        long seed = 4125;
+        double threshold = 0.001;
+        int epoch = 3;
+        long seed = 42;
         String pathName = "src/test/resources/Xor_Dataset.csv";
 
-        int [] structure = {2, 4, 1};
-        ActivationFunc sigmoid = new SigmoidActivation();
-        AbstractLossFunc mse = new MseLoss();
+        int [] structure = {2, 2, 1};
+        OutputActivation sigmoid = new SigmoidActivation();
+        AbstractLossFunc mse = new BceLoss();
         Initializer lecun = new LeCunInitializer(seed);
         Normalizer zScore = new ZScoreNormalizer();
 
-        double threshold = 0.015;
+        double [] expected = {0.0, 1.0, 1.0, 0.0};
 
         //when
         Trainer trainer = new Trainer(learningRate, epoch);
@@ -40,20 +41,19 @@ public class XorTest
         trainer.initNeuralNetwork(structure, mse, sigmoid, lecun);
 
         trainer.fit();
-        double [] result1 = trainer.predict(new double[]{0.0, 0.0});
-        double [] result2 = trainer.predict(new double[]{1.0, 0.0});
-        double [] result3 = trainer.predict(new double[]{0.0, 1.0});
-        double [] result4 = trainer.predict(new double[]{1.0, 1.0});
+        double [][] input = {{0.0, 0.0}, {0.0, 1.0}, {1.0, 0.0}, {1.0, 1.0}};
 
-        System.out.println(result1[0]);
-        System.out.println(result2[0]);
-        System.out.println(result3[0]);
-        System.out.println(result4[0]);
+        double [][] normalizedInput = zScore.normalizePredict(input);
+        double [] predicted = new double[expected.length];
+
+        for(int i = 0; i < normalizedInput.length; i++) {
+            predicted[i] = trainer.predict(normalizedInput[i])[0];
+        }
 
         //then
-        assertTrue(result1[0] >= 0.0 && result1[0] <= 0.0 + threshold);
-        assertTrue(result2[0] <= 1.0 && result2[0] >= 1.0 - threshold);
-        assertTrue(result3[0] <= 1.0 && result3[0] >= 1.0 - threshold);
-        assertTrue(result4[0] >= 0.0 && result4[0] <= 0.0 + threshold);
+        for(int i = 0; i < expected.length; i++) {
+            System.out.println(predicted[i]);
+            assertEquals(expected[i], predicted[i], threshold);
+        }
     }
 }

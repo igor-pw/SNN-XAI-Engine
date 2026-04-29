@@ -6,12 +6,12 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class LinearActivationTest extends ActivationFuncTest
+public class LinearActivationTest extends HiddenActivationFuncTest
 {
-    private final ActivationFunc linear = new LinearActivation();
+    private final HiddenActivation linear = new LinearActivation();
 
     @Override
-    protected ActivationFunc getActivation() { return linear; }
+    protected HiddenActivation getActivation() { return linear; }
 
     @Override
     protected Stream<Arguments> provideUpdateToXTestData() {

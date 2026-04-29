@@ -1,25 +1,32 @@
 package activation;
 
+import operator.SoftmaxOperator;
+import structure.Neuron;
 import structure.Scalar;
 
-public class SoftmaxActivation implements ActivationFunc
+import java.util.Arrays;
+
+public class SoftmaxActivation implements OutputActivation
 {
     @Override
-    public void activate(Scalar[] input) {
+    public void activate(Neuron[] input) {
+        int size = input.length;
+        double result;
         double denominator = 0.0;
 
-        if(input.length == 0) {
-            throw new IllegalArgumentException("Empty input");
+        for(Neuron neuron : input) {
+            denominator += Math.exp(neuron.getValue());
         }
 
-         for(Scalar scalar : input) {
-             denominator += Math.exp(scalar.getValue());
-         }
+        for(int i = 0; i < size; i++) {
+            result = Math.exp(input[i].getValue()) / denominator + EPSILON;
+            input[i].setValue(result);
+            }
+    }
 
-         for(Scalar scalar : input) {
-             double currentValue = scalar.getValue();
-             double newValue = Math.exp(currentValue) / denominator;
-             scalar.setValue(newValue);
-         }
+    @Override
+    public void derive(Neuron [] predicted, double [] target) {
+        return;
     }
 }
+

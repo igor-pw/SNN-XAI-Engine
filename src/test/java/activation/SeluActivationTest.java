@@ -7,12 +7,12 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SeluActivationTest extends ActivationFuncTest
+public class SeluActivationTest extends HiddenActivationFuncTest
 {
     private final SeluActivation selu = new SeluActivation();
 
     @Override
-    protected ActivationFunc getActivation() { return selu; }
+    protected HiddenActivation getActivation() { return selu; }
 
     @Override
     protected Stream<Arguments> provideUpdateToXTestData() {
@@ -36,31 +36,5 @@ public class SeluActivationTest extends ActivationFuncTest
                         new double[]{-7.213, 4.321, -1.04, -5.12, 0.12},
                         new double[]{-1.756803721832739, 4.540078966363031, -1.136690897476226, -1.747592898934778, 0.126084118482658})
         );
-    }
-
-    @Test
-    public void shouldUpdateToNegative_whenValueIsNegative() {
-        //given
-        initInput(-5.3291);
-
-        //when
-        selu.activate(input);
-        double result = input[0].getValue();
-
-        //then
-        assertTrue(result < 0);
-    }
-
-    @Test
-    public void shouldUpdateToPositive_whenValueIsPositive() {
-       //given
-        initInput(3.3251);
-
-       //when
-        selu.activate(input);
-        double result = input[0].getValue();
-
-        //then
-        assertTrue(result > 0);
     }
 }
