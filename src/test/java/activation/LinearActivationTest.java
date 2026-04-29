@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class LinearActivationTest extends ActivationFuncTest
+public class LinearActivationTest extends HiddenActivationFuncTest
 {
     private final HiddenActivation linear = new LinearActivation();
 

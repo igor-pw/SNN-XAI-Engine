@@ -14,31 +14,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static utils.TestUtils.getResult;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public abstract class ActivationFuncTest
+public abstract class HiddenActivationFuncTest
 {
     protected abstract HiddenActivation getActivation();
     protected abstract Stream<Arguments> provideUpdateToXTestData();
     protected abstract Stream<Arguments> provideUpdateToVectorXTestData();
 
-    protected Scalar[] input;
-
-    protected void initInput(double... values) {
-        input = new Scalar[values.length];
-
-        for(int i = 0; i < values.length; i++) {
-            input[i] = new Scalar(values[i]);
-        }
-    }
-
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideUpdateToXTestData")
     public void shouldUpdateToX_whenActivateIsUsed(String description, double input, double expected) {
         //given
-        initInput(input);
 
         //when
-        getActivation().activate(this.input);
-        double result = getResult(this.input)[0];
+        double result = getActivation().activate(input);
 
         //then
         assertEquals(expected, result, 1e-9);
@@ -48,24 +36,16 @@ public abstract class ActivationFuncTest
     @MethodSource("provideUpdateToVectorXTestData")
     public void shouldUpdateToVectorX_whenActivateIsUsed(String description, double [] input, double [] expected) {
         //given
-        initInput(input);
 
         //when
-        getActivation().activate(this.input);
-        double [] result = getResult(this.input);
+        double [] result = new double[input.length];
+        for(int i = 0; i < input.length; i++) {
+            result[i] = getActivation().activate(input[i]);
+        }
 
         //then
         for(int i = 0; i < expected.length; i++) {
             assertEquals(expected[i], result[i], 1e-9);
         }
-    }
-
-    @Test
-    public void shouldThrowException_whenInputIsEmpty() {
-        //given
-        initInput();
-
-        //then
-        assertThrows(IllegalArgumentException.class, () -> getActivation().activate(input));
     }
 }

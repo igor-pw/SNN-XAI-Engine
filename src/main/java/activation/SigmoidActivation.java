@@ -17,14 +17,7 @@ public class SigmoidActivation implements OutputActivation
     }
 
     @Override
-    public double [] derive(double [] input, double [] output) {
-        int size = input.length;
-        double [] result = new double[size];
-
-        for(int i = 0 ; i < size; i++) {
-            result[i] = output[i] * (1 - output[i]);
-        }
-
-        return result;
+    public void derive(Neuron [] predicted, double [] target) {
+        return;
     }
 }

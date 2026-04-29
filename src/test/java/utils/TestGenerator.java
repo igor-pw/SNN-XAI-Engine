@@ -8,6 +8,7 @@ import loss.AbstractLossFunc;
 import loss.MseLoss;
 import structure.Layer;
 import structure.NeuralNetwork;
+import structure.Neuron;
 import structure.Scalar;
 
 import java.util.Arrays;
@@ -20,6 +21,41 @@ public class TestGenerator
     private static AbstractLossFunc mse = new MseLoss();
     private static Random random = new Random(SEED);
 
+    //new / refactored
+    public static Neuron [] initRandomNeuronVector(int size, double bound) {
+        Neuron [] result = new Neuron[size];
+        double value;
+
+        for(int i = 0; i < size; i++) {
+            value = random.nextDouble(bound);
+            result[i] = new Neuron(value);
+        }
+
+        return result;
+    }
+
+    public static Neuron [] initDefinedNeuronVector(double... value) {
+        int size = value.length;
+        Neuron [] result = new Neuron[size];
+
+        for(int i = 0; i < size; i++) {
+            result[i] = new Neuron(value[i]);
+        }
+
+        return result;
+    }
+
+    public static Neuron [] initOneValueNeuronVector(int size, double value) {
+        Neuron [] result = new Neuron[size];
+
+        for(int i = 0; i < size; i++) {
+            result[i] = new Neuron(value);
+        }
+
+        return result;
+    }
+
+    //repair / refactor
     public static Layer initDefinedLayer(double [][] weight, double [] bias, HiddenActivation activationFunc) {
         int inputSize = weight[0].length;
         int outputSize = weight.length;

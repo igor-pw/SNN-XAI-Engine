@@ -4,6 +4,8 @@ import operator.SoftmaxOperator;
 import structure.Neuron;
 import structure.Scalar;
 
+import java.util.Arrays;
+
 public class SoftmaxActivation implements OutputActivation
 {
     @Override
@@ -23,15 +25,8 @@ public class SoftmaxActivation implements OutputActivation
     }
 
     @Override
-    public double [] derive(double [] input, double [] output) {
-        int size = input.length;
-        double [] result = new double[size];
-
-        for(int i = 0; i < size; i++) {
-            result[i] = output[i] - input[i];
-        }
-
-        return result;
+    public void derive(Neuron [] predicted, double [] target) {
+        return;
     }
 }
 

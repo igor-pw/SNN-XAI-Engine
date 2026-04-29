@@ -13,11 +13,18 @@ public class Neuron
     private double grad = 0.0;
     private double hessian = 0.0;
 
+    //new / refactored
     public Neuron() {
         weight = null;
         input = null;
         bias = null;
         activationFunc = null;
+    }
+
+    public Neuron(double value) {
+        this();
+
+        this.value = value;
     }
 
     public Neuron(Scalar [] weight, Neuron [] input, Scalar bias, HiddenActivation activationFunc) {
@@ -57,6 +64,7 @@ public class Neuron
 
     public void addGrad(double grad) { this.grad += grad; }
     public void setGrad(double grad) {this.grad = grad; }
+    public void multiplyGrad(double grad) { this.grad *= grad; }
 
     public double getValue() { return value; }
     public void setValue(double value) { this.value = value; }

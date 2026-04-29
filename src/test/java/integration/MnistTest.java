@@ -1,7 +1,5 @@
 package integration;
 
-import activation.HiddenActivation;
-import activation.LinearActivation;
 import activation.OutputActivation;
 import activation.SoftmaxActivation;
 import com.opencsv.CSVReader;
@@ -10,7 +8,6 @@ import initialization.Initializer;
 import initialization.LeCunInitializer;
 import loss.AbstractLossFunc;
 import loss.CceLoss;
-import loss.MseLoss;
 import normalization.Normalizer;
 import normalization.ZScoreNormalizer;
 import org.junit.jupiter.api.Test;
@@ -22,22 +19,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class MnistTest {
 
     @Test
-    public void shouldPass() {
+    public void  shouldCorrectlyPerformFullLearningProcess_andPredictOutputWithXAccuracy() {
         //given
-        double learningRate = 0.00015;
+        double learningRate = 0.001;
 
-        int epoch = 20;
+        int epoch = 10;
         int oneHotSize = 10;
-        long seed = 337609;
+        long seed = 42;
         String pathName = "src/test/resources/MNIST/mnist_train.csv";
 
-        int[] structure = {784, 64, 32, 10};
+        int[] structure = {784, 32, 10};
         OutputActivation softmax = new SoftmaxActivation();
         AbstractLossFunc cce = new CceLoss();
         Initializer lecun = new LeCunInitializer(seed);
         Normalizer zScore = new ZScoreNormalizer();
 
-        double threshold = 0.2;
+        double threshold = 0.1;
 
         //when
         Trainer trainer = new Trainer(learningRate, epoch);

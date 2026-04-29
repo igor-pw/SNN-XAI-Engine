@@ -66,7 +66,7 @@ public class NeuralNetwork
     public void backward(double [] target) {
         Neuron [] predicted = layer[layer.length - 1].getOutput();
         cost = lossFunc.compute(predicted, target);
-        AutoGradEngine.backward(computationalGraph.getGraph(), predicted, target, lossFunc);
+        AutoGradEngine.backward(computationalGraph.getGraph(), predicted, target, lossFunc, outputActivation);
     }
 
     public void updateNetwork(double learningRate) {
@@ -74,14 +74,7 @@ public class NeuralNetwork
             double oldWeight = scalar.getValue();
             double newWeight = oldWeight - scalar.getGrad() * learningRate;
 
-            scalar.setValue(newWeight);
-        }
-
-    }
-
-    public void clearNetwork() {
-        for(Scalar scalar : parameter) {
-            scalar.setGrad(0.0);
+            scalar.updateValue(newWeight);
         }
 
         computationalGraph.clearGraph();

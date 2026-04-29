@@ -30,8 +30,7 @@ public class BceLoss extends AbstractLossFunc
         int size = predicted.length;
 
         for(int i = 0; i < size; i++) {
-            double predictedValue = predicted[i].getValue();
-            double grad = (predictedValue - target[i]) / (predictedValue * (1 - predictedValue) + EPSILON);
+            double grad = predicted[i].getValue() - target[i];
             predicted[i].setGrad(grad);
         }
     }

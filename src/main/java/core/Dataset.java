@@ -8,10 +8,17 @@ public class Dataset
 {
     private double [][] features;
     private double [][] target;
+    private final int [] index;
+    private final Random random = new Random(42);
 
     public Dataset(double [][] features, double [][] target) {
         this.features = features;
         this.target = target;
+
+        index = new int[features.length];
+        for(int i = 0; i < features.length; i++) {
+            index[i] = i;
+        }
     }
 
     public void normalize(Normalizer normalizer) {
@@ -19,26 +26,14 @@ public class Dataset
     }
 
     public void shuffle() {
-        int size = features.length;
-        List<Integer> index = new ArrayList<>(size);
+        int size = index.length;
 
-        for(int i = 0; i < size; i++) {
-            index.add(i);
+        for(int i = size-1; i > 0; i--) {
+            int j = random.nextInt(i+1);
+            int temp = index[i];
+            index[i] = index[j];
+            index[j] = temp;
         }
-
-        Collections.shuffle(index, new Random(337609));
-
-        double [][] shuffledFeatures = new double[size][];
-        double [][] shuffledTarget = new double[size][];
-
-        for(int i = 0; i < size; i++) {
-            int newIndex = index.get(i);
-            shuffledFeatures[i] = features[newIndex];
-            shuffledTarget[i] = target[newIndex];
-        }
-
-        features = shuffledFeatures;
-        target = shuffledTarget;
     }
 
     public void toOneHotEncoding(int size) {
@@ -51,6 +46,8 @@ public class Dataset
         }
     }
 
+    public double [] getFeatures(int i) { return features[index[i]]; }
     public double [][] getFeatures() { return features; }
+    public double [] getTarget(int i) { return target[index[i]]; }
     public double [][] getTarget() { return target; }
 }

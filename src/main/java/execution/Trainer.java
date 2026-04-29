@@ -53,10 +53,9 @@ public class Trainer
             dataset.shuffle();
 
             for(int j = 0; j < datasetSize; j++) {
-                neuralNetwork.forward(dataset.getFeatures()[j]);
-                neuralNetwork.backward(dataset.getTarget()[j]);
+                neuralNetwork.forward(dataset.getFeatures(j));
+                neuralNetwork.backward(dataset.getTarget(j));
                 neuralNetwork.updateNetwork(learningRate);
-                neuralNetwork.clearNetwork();
             }
 
             System.out.println("loss: " + neuralNetwork.getCost());
@@ -65,6 +64,7 @@ public class Trainer
 
     public double [] predict(double [] input) {
         Neuron[] scalarResult = neuralNetwork.forward(input);
+
         int size = scalarResult.length;
 
         double [] result = new double[size];
