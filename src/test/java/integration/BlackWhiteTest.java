@@ -21,8 +21,9 @@ public class BlackWhiteTest {
 
     @Test
     public void  shouldCorrectlyPerformFullLearningProcess_andPredictOutput() {
-        double learningRate = 0.001;
-        int epoch = 25;
+        double learningRate = 0.01;
+        int epoch = 20;
+        int batch = 2;
         long seed = 42;
         double threshold = 0.1;
         String pathName = "src/test/resources/MNIST/black_and_white.csv";
@@ -36,7 +37,7 @@ public class BlackWhiteTest {
         double [] expected = {0.0, 1.0};
 
         //when
-        Trainer trainer = new Trainer(learningRate, epoch);
+        Trainer trainer = new Trainer(learningRate, epoch, batch);
 
         trainer.readData(pathName, 1);
         trainer.normalizeData(zScore);
@@ -70,6 +71,7 @@ public class BlackWhiteTest {
         }
 
         for(int i = 0; i < predictSize; i++) {
+            System.out.println(result[i]);
             assertEquals(expected[i], result[i], threshold);
         }
     }

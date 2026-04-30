@@ -24,6 +24,7 @@ public class MnistTest {
         double learningRate = 0.001;
 
         int epoch = 10;
+        int batch = 1;
         int oneHotSize = 10;
         long seed = 42;
         String pathName = "src/test/resources/MNIST/mnist_train.csv";
@@ -37,7 +38,7 @@ public class MnistTest {
         double threshold = 0.1;
 
         //when
-        Trainer trainer = new Trainer(learningRate, epoch);
+        Trainer trainer = new Trainer(learningRate, epoch, batch);
 
         trainer.readData(pathName, 1);
         trainer.toOneHotEncoding(oneHotSize);

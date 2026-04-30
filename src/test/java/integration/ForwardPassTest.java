@@ -17,14 +17,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ForwardPassTest
 {
-    static Stream<Arguments> allActivation() {
+    /*static Stream<Arguments> allActivation() {
         return Stream.of(
             Arguments.of(new SoftmaxActivation(), new double[]{0.0, 1.0}),
             Arguments.of(new SigmoidActivation(), new double[]{0.0, 1.0}),
             Arguments.of(new ReluActivation(), new double[]{0.0, Double.MAX_VALUE}),
             Arguments.of(new LinearActivation(), new double[]{-Double.MAX_VALUE, Double.MAX_VALUE})
         );
-    }
+    }*/
 
     /*@ParameterizedTest
     @MethodSource("allActivation")

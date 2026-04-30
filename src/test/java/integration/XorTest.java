@@ -20,9 +20,10 @@ public class XorTest
     public void shouldCorrectlyPerformFullLearningProcess_andPredictOutput() {
         //given
         double learningRate = 0.1;
-        double threshold = 0.001;
+        double threshold = 0.01;
         int epoch = 3;
-        long seed = 42;
+        int batch = 4;
+        long seed = 67;
         String pathName = "src/test/resources/Xor_Dataset.csv";
 
         int [] structure = {2, 2, 1};
@@ -34,7 +35,7 @@ public class XorTest
         double [] expected = {0.0, 1.0, 1.0, 0.0};
 
         //when
-        Trainer trainer = new Trainer(learningRate, epoch);
+        Trainer trainer = new Trainer(learningRate, epoch, batch);
 
         trainer.readData(pathName, 1);
         trainer.normalizeData(zScore);

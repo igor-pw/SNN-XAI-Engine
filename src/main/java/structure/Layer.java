@@ -1,8 +1,6 @@
 package structure;
 
 import activation.HiddenActivation;
-import activation.OutputActivation;
-import operator.ForwardOperator;
 
 public class Layer
 {

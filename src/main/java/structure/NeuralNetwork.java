@@ -69,10 +69,10 @@ public class NeuralNetwork
         AutoGradEngine.backward(computationalGraph.getGraph(), predicted, target, lossFunc, outputActivation);
     }
 
-    public void updateNetwork(double learningRate) {
+    public void updateNetwork(double learningRate, int batch) {
         for (Scalar scalar : parameter) {
             double oldWeight = scalar.getValue();
-            double newWeight = oldWeight - scalar.getGrad() * learningRate;
+            double newWeight = oldWeight - learningRate*scalar.getGrad()/batch;
 
             scalar.updateValue(newWeight);
         }

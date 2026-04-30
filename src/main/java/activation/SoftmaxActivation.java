@@ -1,10 +1,6 @@
 package activation;
 
-import operator.SoftmaxOperator;
 import structure.Neuron;
-import structure.Scalar;
-
-import java.util.Arrays;
 
 public class SoftmaxActivation implements OutputActivation
 {

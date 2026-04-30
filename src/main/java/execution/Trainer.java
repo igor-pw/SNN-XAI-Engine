@@ -16,12 +16,19 @@ public class Trainer
 {
     private double learningRate = 0.001;
     private int epoch = 10;
+    private int batch = 1;
     private Dataset dataset;
     private NeuralNetwork neuralNetwork;
 
     public Trainer(double learningRate, int epoch) {
         this.learningRate = learningRate;
         this.epoch = epoch;
+    }
+
+    public Trainer(double learningRate, int epoch, int batch) {
+        this.learningRate = learningRate;
+        this.epoch = epoch;
+        this.batch = batch;
     }
 
     public void readData(String pathName, int skipLines) {
@@ -55,8 +62,13 @@ public class Trainer
             for(int j = 0; j < datasetSize; j++) {
                 neuralNetwork.forward(dataset.getFeatures(j));
                 neuralNetwork.backward(dataset.getTarget(j));
-                neuralNetwork.updateNetwork(learningRate);
+                //Mini-Batch Gradient Descent
+                if(((j+1) % batch == 0) || (j == datasetSize-1)) {
+                    neuralNetwork.updateNetwork(learningRate, batch);
+                }
             }
+
+
 
             System.out.println("loss: " + neuralNetwork.getCost());
         }
