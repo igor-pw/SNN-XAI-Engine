@@ -8,6 +8,8 @@ import core.AutoGradEngine;
 import core.ComputationalGraph;
 import initialization.Initializer;
 import loss.AbstractLossFunc;
+import optimization.NAdam;
+import optimization.Optimizer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,7 @@ public class NeuralNetwork
     private final AbstractLossFunc lossFunc;
     private final OutputActivation outputActivation;
     private final ComputationalGraph computationalGraph = new ComputationalGraph();
+    private final Optimizer adamOptimizer;
     private double cost = 0.0;
 
     public NeuralNetwork(int[] structure, AbstractLossFunc lossFunc, OutputActivation outputActivation) {
@@ -46,6 +49,8 @@ public class NeuralNetwork
 
             parameter.addAll(List.of(bias));
         }
+
+        adamOptimizer = new NAdam(parameter.size());
     }
 
     public void initializeWeights(Initializer initializer) {
@@ -70,13 +75,13 @@ public class NeuralNetwork
     }
 
     public void updateNetwork(double learningRate, int batch) {
-        for (Scalar scalar : parameter) {
+        /*for (Scalar scalar : parameter) {
             double oldWeight = scalar.getValue();
             double newWeight = oldWeight - learningRate*scalar.getGrad()/batch;
 
             scalar.updateValue(newWeight);
-        }
-
+        }*/
+        adamOptimizer.optimize(parameter, learningRate, batch);
         computationalGraph.clearGraph();
     }
 

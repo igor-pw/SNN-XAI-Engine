@@ -5,6 +5,8 @@ import structure.Layer;
 import structure.Neuron;
 import structure.Scalar;
 
+import java.util.Arrays;
+
 public class ComputationalGraph
 {
     private Neuron [] computationalGraph;
@@ -23,7 +25,7 @@ public class ComputationalGraph
         Neuron [] input = new Neuron[size];
 
         for(int i = 0; i < size; i++) {
-            input[i] = new Neuron();
+            input[i] = new Neuron(true);
         }
 
         System.arraycopy(input, 0, graphInput, 0, size);

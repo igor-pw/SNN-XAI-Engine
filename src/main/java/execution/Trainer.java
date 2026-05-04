@@ -68,8 +68,6 @@ public class Trainer
                 }
             }
 
-
-
             System.out.println("loss: " + neuralNetwork.getCost());
         }
     }

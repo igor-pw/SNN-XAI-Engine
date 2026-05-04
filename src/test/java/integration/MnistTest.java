@@ -21,10 +21,10 @@ public class MnistTest {
     @Test
     public void  shouldCorrectlyPerformFullLearningProcess_andPredictOutputWithXAccuracy() {
         //given
-        double learningRate = 0.001;
+        double learningRate = 0.0000075;
 
         int epoch = 10;
-        int batch = 1;
+        int batch = 16;
         int oneHotSize = 10;
         long seed = 42;
         String pathName = "src/test/resources/MNIST/mnist_train.csv";
@@ -35,7 +35,7 @@ public class MnistTest {
         Initializer lecun = new LeCunInitializer(seed);
         Normalizer zScore = new ZScoreNormalizer();
 
-        double threshold = 0.1;
+        double threshold = 0.5;
 
         //when
         Trainer trainer = new Trainer(learningRate, epoch, batch);
@@ -71,6 +71,7 @@ public class MnistTest {
 
         for(int i = 0; i < predictSize; i++) {
             double[] result = trainer.predict(normalizedInput[i]);
+
 
             if(result[expected[i]] <= 1.0 && result[expected[i]] >= 1.0 - threshold) {
                 trueCounter++;

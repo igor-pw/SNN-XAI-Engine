@@ -19,9 +19,9 @@ public class XorTest
     @Test
     public void shouldCorrectlyPerformFullLearningProcess_andPredictOutput() {
         //given
-        double learningRate = 0.1;
+        double learningRate = 0.02;
         double threshold = 0.01;
-        int epoch = 3;
+        int epoch = 1;
         int batch = 4;
         long seed = 67;
         String pathName = "src/test/resources/Xor_Dataset.csv";

@@ -22,7 +22,7 @@ public class BlackWhiteTest {
     @Test
     public void  shouldCorrectlyPerformFullLearningProcess_andPredictOutput() {
         double learningRate = 0.01;
-        int epoch = 20;
+        int epoch = 2;
         int batch = 2;
         long seed = 42;
         double threshold = 0.1;

@@ -1,7 +1,6 @@
 package core;
 
 import activation.SeluActivation;
-import operator.ForwardOperator;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import structure.Scalar;

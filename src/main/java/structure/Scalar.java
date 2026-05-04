@@ -2,9 +2,9 @@ package structure;
 
 public class Scalar
 {
-    private double value;
-    private double grad;
-    private double hessian;
+    double value;
+    double grad;
+    double hessian;
 
     public Runnable forwardOperator = null;
 
