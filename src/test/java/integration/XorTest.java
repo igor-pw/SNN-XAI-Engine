@@ -39,7 +39,7 @@ public class XorTest
 
         trainer.readData(pathName, 1);
         trainer.normalizeData(zScore);
-        trainer.initNeuralNetwork(structure, mse, sigmoid, lecun);
+        trainer.initNeuralNetwork(structure, mse, sigmoid, lecun, 0.0);
 
         trainer.fit();
         double [][] input = {{0.0, 0.0}, {0.0, 1.0}, {1.0, 0.0}, {1.0, 1.0}};

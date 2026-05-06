@@ -1,6 +1,8 @@
 package structure;
 
 import activation.HiddenActivation;
+import regularization.AlphaDropout;
+import regularization.Regulator;
 
 public class Neuron
 {
@@ -13,6 +15,7 @@ public class Neuron
     private double activationInput = 0.0;
     double grad = 0.0;
     double hessian = 0.0;
+    boolean dropoutMask = false;
 
     //new / refactored
     public Neuron() {
@@ -55,7 +58,7 @@ public class Neuron
         value = activationFunc.activate(activationInput);
     }
 
-    public void backward() {
+    public void backward(Regulator dropout) {
         int size = weight.length;
         double delta = grad * activationFunc.derive(activationInput, value);
 
@@ -66,7 +69,7 @@ public class Neuron
 
             //skips computing gradient for network input
             if(!isGraphInput) {
-                input[i].grad += weight[i].value * delta;
+                input[i].grad += weight[i].value * delta; //* dropout.derive(input[i]);
             }
         }
 
@@ -79,7 +82,8 @@ public class Neuron
 
     public double getValue() { return value; }
     public void setValue(double value) { this.value = value; }
-
+    public boolean getDropoutMask() { return dropoutMask; }
+    public void setDropoutMask(boolean dropoutMask) { this.dropoutMask = dropoutMask; }
     public Scalar [] getWeight() { return weight; }
     public Neuron [] getInput() { return input; }
     public Scalar getBias() { return bias; }

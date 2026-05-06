@@ -41,7 +41,7 @@ public class BlackWhiteTest {
 
         trainer.readData(pathName, 1);
         trainer.normalizeData(zScore);
-        trainer.initNeuralNetwork(structure, bce, sigmoid, lecun);
+        trainer.initNeuralNetwork(structure, bce, sigmoid, lecun, 0.0);
 
         trainer.fit();
 

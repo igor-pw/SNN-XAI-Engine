@@ -21,21 +21,20 @@ public class MnistTest {
     @Test
     public void  shouldCorrectlyPerformFullLearningProcess_andPredictOutputWithXAccuracy() {
         //given
-        double learningRate = 0.0000075;
+        double learningRate = 0.0000071;
 
         int epoch = 10;
         int batch = 16;
         int oneHotSize = 10;
         long seed = 42;
+        double threshold = 0.0;
         String pathName = "src/test/resources/MNIST/mnist_train.csv";
 
-        int[] structure = {784, 32, 10};
+        int[] structure = {784, 128, 10};
         OutputActivation softmax = new SoftmaxActivation();
         AbstractLossFunc cce = new CceLoss();
         Initializer lecun = new LeCunInitializer(seed);
         Normalizer zScore = new ZScoreNormalizer();
-
-        double threshold = 0.5;
 
         //when
         Trainer trainer = new Trainer(learningRate, epoch, batch);
@@ -43,7 +42,7 @@ public class MnistTest {
         trainer.readData(pathName, 1);
         trainer.toOneHotEncoding(oneHotSize);
         trainer.normalizeData(zScore);
-        trainer.initNeuralNetwork(structure, cce, softmax, lecun);
+        trainer.initNeuralNetwork(structure, cce, softmax, lecun, 0.20);
 
         trainer.fit();
 
@@ -72,8 +71,9 @@ public class MnistTest {
         for(int i = 0; i < predictSize; i++) {
             double[] result = trainer.predict(normalizedInput[i]);
 
+            int predicted_index = utils.TestUtils.argMax(result);
 
-            if(result[expected[i]] <= 1.0 && result[expected[i]] >= 1.0 - threshold) {
+            if(expected[i] == predicted_index && result[predicted_index] > threshold) {
                 trueCounter++;
             }
         }

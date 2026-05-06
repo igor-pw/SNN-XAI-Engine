@@ -57,8 +57,8 @@ public class NeuralNetwork
         initializer.initialize(layer);
     }
 
-    public void prepareForward() {
-        computationalGraph.buildComputationalGraph(layer, layer[0].getInputSize());
+    public void prepareForward(double probability) {
+        computationalGraph.buildComputationalGraph(layer, layer[0].getInputSize(), probability);
     }
 
     public Neuron [] forward(double [] input) {
@@ -71,7 +71,7 @@ public class NeuralNetwork
     public void backward(double [] target) {
         Neuron [] predicted = layer[layer.length - 1].getOutput();
         cost = lossFunc.compute(predicted, target);
-        AutoGradEngine.backward(computationalGraph.getGraph(), predicted, target, lossFunc, outputActivation);
+        AutoGradEngine.backward(computationalGraph.getGraph(), computationalGraph.getDropout(), predicted, target, lossFunc, outputActivation);
     }
 
     public void updateNetwork(double learningRate, int batch) {

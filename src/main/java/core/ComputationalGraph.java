@@ -1,6 +1,8 @@
 package core;
 
 import activation.HiddenActivation;
+import regularization.AlphaDropout;
+import regularization.Regulator;
 import structure.Layer;
 import structure.Neuron;
 import structure.Scalar;
@@ -11,13 +13,18 @@ public class ComputationalGraph
 {
     private Neuron [] computationalGraph;
     private Neuron [] graphInput;
+    private Regulator alphaDropout;
+    private int output;
 
-    public void buildComputationalGraph(Layer[] layer, int size)
+    public void buildComputationalGraph(Layer[] layer, int size, double probability)
     {
+        alphaDropout = new AlphaDropout(probability);
         int graphSize = 0;
         for(Layer nLayer : layer) {
             graphSize += nLayer.getOutputSize();
         }
+
+        output = graphSize - layer[layer.length-1].getOutputSize();
 
         computationalGraph = new Neuron[graphSize];
         graphInput = new Neuron[size];
@@ -58,8 +65,11 @@ public class ComputationalGraph
             graphInput[i].setValue(input[i]);
         }
 
-        for(Neuron neuron : computationalGraph) {
-            neuron.forward();
+        for(int i =  0; i < computationalGraph.length; i++) {
+            if(i < output) {
+                computationalGraph[i].setDropoutMask(alphaDropout.regulate(computationalGraph[i]));
+            }
+            computationalGraph[i].forward();
         }
     }
 
@@ -72,4 +82,5 @@ public class ComputationalGraph
 
     public int getSize() { return computationalGraph.length; }
     public Neuron [] getGraph() { return computationalGraph; }
+    public Regulator getDropout() { return alphaDropout; }
 }
