@@ -21,10 +21,10 @@ public class MnistTest {
     @Test
     public void  shouldCorrectlyPerformFullLearningProcess_andPredictOutputWithXAccuracy() {
         //given
-        double learningRate = 0.000007;
+        double learningRate = 0.0000081;
 
         int epoch = 10;
-        int batch = 16;
+        int batch = 20;
         int oneHotSize = 10;
         long seed = 42;
         double threshold = 0.0;
@@ -42,7 +42,7 @@ public class MnistTest {
         trainer.readData(pathName, 1);
         trainer.toOneHotEncoding(oneHotSize);
         trainer.normalizeData(zScore);
-        trainer.initNeuralNetwork(structure, cce, softmax, lecun, 0.15);
+        trainer.initNeuralNetwork(structure, cce, softmax, lecun, 0.2);
 
         trainer.fit();
 

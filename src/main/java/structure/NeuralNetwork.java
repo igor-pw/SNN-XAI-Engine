@@ -95,7 +95,5 @@ public class NeuralNetwork
         }
     }
 
-    public Layer [] getLayer() { return layer; }
     public double getCost() { return cost; }
-
 }

@@ -1,6 +1,5 @@
 package execution;
 
-import activation.HiddenActivation;
 import activation.OutputActivation;
 import core.Dataset;
 import initialization.Initializer;
@@ -10,7 +9,6 @@ import loss.AbstractLossFunc;
 import normalization.Normalizer;
 import structure.NeuralNetwork;
 import structure.Neuron;
-import structure.Scalar;
 
 public class Trainer
 {

@@ -37,7 +37,6 @@ public class AlphaDropout implements Regulator
     }
 
     public double derive(int i) {
-
         if(q == 1.0) return 1.0;
 
         return dropoutMask[i] ? 0.0 : a;

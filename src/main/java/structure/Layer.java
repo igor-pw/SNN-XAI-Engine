@@ -4,13 +4,15 @@ import activation.HiddenActivation;
 import regularization.AlphaDropout;
 import regularization.Regulator;
 
+import java.util.stream.IntStream;
+
 public class Layer
 {
-    private double [][] weight;
-    private double [][] weightGrad;
-    private double [] bias;
-    private double [] biasGrad;
-    private double [] activationInput;
+    private final double [][] weight;
+    private final double [][] weightGrad;
+    private final double [] bias;
+    private final double [] biasGrad;
+    private final double [] activationInput;
     private final Neuron [] output;
     private final HiddenActivation activation;
     private final Regulator dropout;
@@ -37,7 +39,7 @@ public class Layer
 
         if(training) dropout.regulate(output);
 
-        for(int i = 0; i < output.length; i++) {
+        IntStream.range(0, output.length).parallel().forEach(i -> {
             activationInput[i] = bias[i];
 
             for(int j = 0; j < input.length; j++) {
@@ -46,7 +48,7 @@ public class Layer
 
             double value = activation.activate(activationInput[i]);
             output[i].setValue(value);
-        }
+        });
 
         return output;
     }
@@ -55,7 +57,8 @@ public class Layer
 
         if(training) dropout.regulate(output);
 
-        for(int i = 0; i < output.length; i++) {
+        IntStream.range(0, output.length).parallel().forEach(i -> {
+        //for(int i = 0; i < output.length; i++) {
             activationInput[i] = bias[i];
 
             for(int j = 0; j < input.length; j++) {
@@ -64,7 +67,7 @@ public class Layer
 
             double value = activation.activate(activationInput[i]);
             output[i].setValue(value);
-       }
+       });
 
        return output;
     }

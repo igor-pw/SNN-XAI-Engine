@@ -1,7 +1,6 @@
 package activation;
 
 import structure.Neuron;
-import structure.Scalar;
 
 public class SigmoidActivation implements OutputActivation
 {

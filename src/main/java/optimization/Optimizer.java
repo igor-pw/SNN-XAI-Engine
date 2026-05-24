@@ -1,9 +1,6 @@
 package optimization;
 
 import structure.Layer;
-import structure.Scalar;
-
-import java.util.List;
 
 public interface Optimizer
 {

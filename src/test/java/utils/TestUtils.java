@@ -1,22 +1,8 @@
 package utils;
 
-import structure.Scalar;
-
-import java.util.concurrent.atomic.AtomicInteger;
-
 public class TestUtils
 {
    private TestUtils() {};
-
-   static public double [] getResult(Scalar[] input) {
-      double [] result = new double[input.length];
-
-      for(int i = 0; i < input.length; i++) {
-         result[i] = input[i].getValue();
-      }
-
-      return result;
-   }
 
    static public int argMax(double [] output) {
       int bestIndex = 0;

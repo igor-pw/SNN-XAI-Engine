@@ -1,7 +1,6 @@
 package loss;
 
 import structure.Neuron;
-import structure.Scalar;
 
 public class CceLoss extends AbstractLossFunc
 {

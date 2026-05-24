@@ -1,7 +1,5 @@
 package activation;
 
-import structure.Scalar;
-
 public class LinearActivation implements HiddenActivation
 {
     @Override

@@ -1,7 +1,6 @@
 package initialization;
 
 import structure.Layer;
-import structure.Scalar;
 
 import java.util.Random;
 

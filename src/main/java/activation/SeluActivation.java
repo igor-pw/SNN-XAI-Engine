@@ -1,7 +1,5 @@
 package activation;
 
-import structure.Scalar;
-
 public class SeluActivation implements HiddenActivation
 {
     public final static double lambda = 1.0507009873554804934193349852946;
