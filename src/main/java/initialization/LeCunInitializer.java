@@ -16,7 +16,7 @@ public class LeCunInitializer implements Initializer
     @Override
     public void initialize(Layer... layer) {
         double std;
-        Scalar [][] weight;
+        double [][] weight;
 
         for(int i = 0; i < layer.length; i++) {
             weight = layer[i].getWeight();
@@ -24,7 +24,7 @@ public class LeCunInitializer implements Initializer
 
             for(int j = 0; j < layer[i].getOutputSize(); j++) {
                 for(int k = 0; k < layer[i].getInputSize(); k++) {
-                    weight[j][k].setValue(rand.nextGaussian()*std);
+                    weight[j][k] = rand.nextGaussian()*std;
                 }
             }
         }

@@ -8,7 +8,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import structure.NeuralNetwork;
 import structure.Neuron;
 import structure.Scalar;
-import utils.TestGenerator;
 
 import java.util.stream.Stream;
 

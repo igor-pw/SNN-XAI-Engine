@@ -10,7 +10,7 @@ public class LinearActivation implements HiddenActivation
     }
 
     @Override
-    public double derive(double input, double output) {
+    public double derive(double input) {
         return 1.0;
     }
 }

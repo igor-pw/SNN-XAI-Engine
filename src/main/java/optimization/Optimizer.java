@@ -1,10 +1,11 @@
 package optimization;
 
+import structure.Layer;
 import structure.Scalar;
 
 import java.util.List;
 
 public interface Optimizer
 {
-    void optimize(List<Scalar> parameter, double learningRate, int batch);
+    void optimize(Layer[] layer, double learningRate, int batch);
 }

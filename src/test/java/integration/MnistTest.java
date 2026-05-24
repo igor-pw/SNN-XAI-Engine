@@ -21,7 +21,7 @@ public class MnistTest {
     @Test
     public void  shouldCorrectlyPerformFullLearningProcess_andPredictOutputWithXAccuracy() {
         //given
-        double learningRate = 0.0000071;
+        double learningRate = 0.000007;
 
         int epoch = 10;
         int batch = 16;
@@ -30,7 +30,7 @@ public class MnistTest {
         double threshold = 0.0;
         String pathName = "src/test/resources/MNIST/mnist_train.csv";
 
-        int[] structure = {784, 128, 10};
+        int[] structure = {784, 256, 10};
         OutputActivation softmax = new SoftmaxActivation();
         AbstractLossFunc cce = new CceLoss();
         Initializer lecun = new LeCunInitializer(seed);
@@ -42,7 +42,7 @@ public class MnistTest {
         trainer.readData(pathName, 1);
         trainer.toOneHotEncoding(oneHotSize);
         trainer.normalizeData(zScore);
-        trainer.initNeuralNetwork(structure, cce, softmax, lecun, 0.20);
+        trainer.initNeuralNetwork(structure, cce, softmax, lecun, 0.15);
 
         trainer.fit();
 

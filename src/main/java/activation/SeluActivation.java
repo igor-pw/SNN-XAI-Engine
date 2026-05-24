@@ -13,7 +13,7 @@ public class SeluActivation implements HiddenActivation
     }
 
     @Override
-    public double derive(double input, double output) {
+    public double derive(double input) {
         return input > 0.0 ? lambda : lambda * alfa * Math.exp(input);
     }
 }

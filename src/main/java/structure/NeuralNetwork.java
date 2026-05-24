@@ -4,12 +4,12 @@ import activation.HiddenActivation;
 import activation.LinearActivation;
 import activation.OutputActivation;
 import activation.SeluActivation;
-import core.AutoGradEngine;
-import core.ComputationalGraph;
 import initialization.Initializer;
 import loss.AbstractLossFunc;
 import optimization.NAdam;
 import optimization.Optimizer;
+import regularization.AlphaDropout;
+import regularization.Regulator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,14 +17,12 @@ import java.util.List;
 public class NeuralNetwork
 {
     private final Layer[] layer;
-    private final List<Scalar> parameter = new ArrayList<>();
     private final AbstractLossFunc lossFunc;
     private final OutputActivation outputActivation;
-    private final ComputationalGraph computationalGraph = new ComputationalGraph();
     private final Optimizer adamOptimizer;
     private double cost = 0.0;
 
-    public NeuralNetwork(int[] structure, AbstractLossFunc lossFunc, OutputActivation outputActivation) {
+    public NeuralNetwork(int[] structure, AbstractLossFunc lossFunc, OutputActivation outputActivation, double dropout) {
         this.outputActivation = outputActivation;
         int layerNumber = structure.length - 1;
         layer = new Layer[layerNumber];
@@ -34,55 +32,67 @@ public class NeuralNetwork
         HiddenActivation linear = new LinearActivation();
 
         for(int i = 0; i < layerNumber - 1; i++) {
-            layer[i] = new Layer(structure[i], structure[i+1], selu);
+            layer[i] = new Layer(structure[i], structure[i+1], selu, dropout);
         }
 
-        layer[layerNumber - 1] = new Layer(structure[layerNumber - 1], structure[layerNumber], linear);
+        layer[layerNumber - 1] = new Layer(structure[layerNumber - 1], structure[layerNumber], linear, 0.0);
 
-        for(Layer nLayer : layer) {
-            Scalar [][] weight = nLayer.getWeight();
-            Scalar [] bias = nLayer.getBias();
+        int weightSize = 0;
+        int biasSize = 0;
 
-            for(Scalar [] scalarList : weight) {
-                parameter.addAll(List.of(scalarList));
-            }
-
-            parameter.addAll(List.of(bias));
+        for(int i = 0; i < structure.length - 1; i++) {
+            weightSize += structure[i]*structure[i+1];
+            biasSize += structure[i+1];
         }
 
-        adamOptimizer = new NAdam(parameter.size());
+        adamOptimizer = new NAdam(weightSize, biasSize);
     }
 
     public void initializeWeights(Initializer initializer) {
         initializer.initialize(layer);
     }
 
-    public void prepareForward(double probability) {
-        computationalGraph.buildComputationalGraph(layer, layer[0].getInputSize(), probability);
-    }
+    public Neuron [] forward(double [] input, boolean training) {
+        Neuron [] predicted = layer[0].forward(input, training);
 
-    public Neuron [] forward(double [] input) {
-        computationalGraph.forward(input);
-        Neuron [] predicted = layer[layer.length - 1].getOutput();
+        for(int i = 1; i < layer.length; i++) {
+            predicted = layer[i].forward(predicted, training);
+        }
+
         outputActivation.activate(predicted);
         return predicted;
     }
 
-    public void backward(double [] target) {
+    public void backward(double [] target, double [] input) {
         Neuron [] predicted = layer[layer.length - 1].getOutput();
         cost = lossFunc.compute(predicted, target);
-        AutoGradEngine.backward(computationalGraph.getGraph(), computationalGraph.getDropout(), predicted, target, lossFunc, outputActivation);
+
+        prepareGrads(predicted, target);
+
+        for(int i = layer.length - 1; i >= 1; i--) {
+            layer[i].backward(layer[i-1].getOutput());
+        }
+
+        layer[0].backward(input);
+    }
+
+    private void prepareGrads(Neuron [] predicted, double [] target) {
+        lossFunc.derive(predicted, target);
+        outputActivation.derive(predicted, target);
     }
 
     public void updateNetwork(double learningRate, int batch) {
-        /*for (Scalar scalar : parameter) {
-            double oldWeight = scalar.getValue();
-            double newWeight = oldWeight - learningRate*scalar.getGrad()/batch;
+        adamOptimizer.optimize(layer, learningRate, batch);
+        clearGraph();
+    }
 
-            scalar.updateValue(newWeight);
-        }*/
-        adamOptimizer.optimize(parameter, learningRate, batch);
-        computationalGraph.clearGraph();
+    private void clearGraph() {
+        for(Layer nLayer : layer) {
+            for(Neuron neuron : nLayer.getOutput()) {
+                neuron.setValue(0.0);
+                neuron.setGrad(0.0);
+            }
+        }
     }
 
     public Layer [] getLayer() { return layer; }

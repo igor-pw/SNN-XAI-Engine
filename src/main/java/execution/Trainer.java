@@ -38,9 +38,8 @@ public class Trainer
     }
 
     public void initNeuralNetwork(int [] structure, AbstractLossFunc lossFunc, OutputActivation outputActivation, Initializer initializer, double dropout) {
-        neuralNetwork = new NeuralNetwork(structure, lossFunc, outputActivation);
+        neuralNetwork = new NeuralNetwork(structure, lossFunc, outputActivation, dropout);
         neuralNetwork.initializeWeights(initializer);
-        neuralNetwork.prepareForward(dropout);
     }
 
     public void normalizeData(Normalizer normalizer) {
@@ -60,8 +59,9 @@ public class Trainer
             dataset.shuffle();
 
             for(int j = 0; j < datasetSize; j++) {
-                neuralNetwork.forward(dataset.getFeatures(j));
-                neuralNetwork.backward(dataset.getTarget(j));
+                neuralNetwork.forward(dataset.getFeatures(j), true);
+                neuralNetwork.backward(dataset.getTarget(j), dataset.getFeatures(j));
+
                 //Mini-Batch Gradient Descent
                 if(((j+1) % batch == 0) || (j == datasetSize-1)) {
                     neuralNetwork.updateNetwork(learningRate, batch);
@@ -73,7 +73,7 @@ public class Trainer
     }
 
     public double [] predict(double [] input) {
-        Neuron[] scalarResult = neuralNetwork.forward(input);
+        Neuron[] scalarResult = neuralNetwork.forward(input, true);
 
         int size = scalarResult.length;
 

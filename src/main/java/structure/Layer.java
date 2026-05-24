@@ -1,33 +1,112 @@
 package structure;
 
 import activation.HiddenActivation;
+import regularization.AlphaDropout;
+import regularization.Regulator;
 
 public class Layer
 {
-    private final Scalar[][] weight;
-    private final Scalar[] bias;
+    private double [][] weight;
+    private double [][] weightGrad;
+    private double [] bias;
+    private double [] biasGrad;
+    private double [] activationInput;
     private final Neuron [] output;
     private final HiddenActivation activation;
+    private final Regulator dropout;
 
-    public Layer(int prevSize, int currentSize, HiddenActivation activation) {
-        weight = new Scalar[currentSize][prevSize];
-        bias = new Scalar[currentSize];
+    public Layer(int prevSize, int currentSize, HiddenActivation activation, double probability) {
+        weight = new double[currentSize][prevSize];
+        weightGrad = new double[currentSize][prevSize];
+        bias = new double[currentSize];
+        biasGrad = new double[currentSize];
+        activationInput = new double[currentSize];
         output = new Neuron[currentSize];
+
         this.activation = activation;
 
         for (int i = 0; i < weight.length; i++) {
-            for (int j = 0; j < weight[i].length; j++) {
-                weight[i][j] = new Scalar();
+            output[i] = new Neuron();
+            bias[i] = 0.1;
+        }
+
+        dropout = new AlphaDropout(currentSize, probability);
+    }
+
+    public Neuron [] forward(double [] input, boolean training) {
+
+        if(training) dropout.regulate(output);
+
+        for(int i = 0; i < output.length; i++) {
+            activationInput[i] = bias[i];
+
+            for(int j = 0; j < input.length; j++) {
+                activationInput[i] += weight[i][j]*input[j];
             }
 
-            bias[i] = new Scalar(0.1);
+            double value = activation.activate(activationInput[i]);
+            output[i].setValue(value);
+        }
+
+        return output;
+    }
+
+    public Neuron [] forward(Neuron [] input, boolean training) {
+
+        if(training) dropout.regulate(output);
+
+        for(int i = 0; i < output.length; i++) {
+            activationInput[i] = bias[i];
+
+            for(int j = 0; j < input.length; j++) {
+                activationInput[i] += weight[i][j]*input[j].value;
+            }
+
+            double value = activation.activate(activationInput[i]);
+            output[i].setValue(value);
+       }
+
+       return output;
+    }
+
+    public void backward(Neuron [] input) {
+        for(int i = 0; i < output.length; i++) {
+            //alphaDropout
+            output[i].multiplyGrad(dropout.derive(i));
+
+            double delta = output[i].grad * activation.derive(activationInput[i]);
+
+            for(int j = 0; j < input.length; j++) {
+                weightGrad[i][j] += input[j].value * delta;
+
+                input[j].grad += weight[i][j] * delta;
+            }
+
+            biasGrad[i] += delta;
+        }
+    }
+
+    public void backward(double [] input) {
+        for(int i = 0; i < output.length; i++) {
+            //alphaDropout
+            output[i].multiplyGrad(dropout.derive(i));
+
+            double delta = output[i].grad * activation.derive(activationInput[i]);
+
+            for(int j = 0; j < input.length; j++) {
+                weightGrad[i][j] += input[j] * delta;
+            }
+
+            biasGrad[i] += delta;
         }
     }
 
     public int getOutputSize() { return weight.length; }
     public int getInputSize() { return weight[0].length; }
-    public Scalar [][] getWeight() { return weight; }
-    public Scalar [] getBias() { return bias; }
+    public double [][] getWeight() { return weight; }
+    public double [][] getWeightGrad() { return weightGrad; }
+    public double [] getBias() { return bias; }
+    public double [] getBiasGrad() { return biasGrad; }
     public Neuron [] getOutput() { return output; }
     public HiddenActivation getActivation() { return activation; }
 }
