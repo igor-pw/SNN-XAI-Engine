@@ -2,7 +2,9 @@ package loss;
 
 import structure.Neuron;
 
-public abstract class AbstractLossFunc
+import java.io.Serializable;
+
+public abstract class AbstractLossFunc implements Serializable
 {
     public static double EPSILON = 1e-15;
 

@@ -4,7 +4,9 @@ import activation.HiddenActivation;
 import regularization.AlphaDropout;
 import regularization.Regulator;
 
-public class Neuron
+import java.io.Serializable;
+
+public class Neuron implements Serializable
 {
     double value = 0.0;
     double grad = 0.0;

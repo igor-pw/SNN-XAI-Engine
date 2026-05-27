@@ -6,6 +6,7 @@ import com.opencsv.CSVReader;
 import execution.Trainer;
 import initialization.Initializer;
 import initialization.LeCunInitializer;
+import io.NeuralNetworkIO;
 import loss.AbstractLossFunc;
 import loss.CceLoss;
 import normalization.Normalizer;
@@ -16,7 +17,7 @@ import java.io.FileReader;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MnistTest {
+public class MnistTrainingTest {
 
     @Test
     public void  shouldCorrectlyPerformFullLearningProcess_andPredictOutputWithXAccuracy() {
@@ -71,12 +72,14 @@ public class MnistTest {
         for(int i = 0; i < predictSize; i++) {
             double[] result = trainer.predict(normalizedInput[i]);
 
-            int predicted_index = utils.TestUtils.argMax(result);
+            int predicted_index = trainer.argMax(result);
 
             if(expected[i] == predicted_index && result[predicted_index] > threshold) {
                 trueCounter++;
             }
         }
+
+        NeuralNetworkIO.save(trainer.getNeuralNetwork(), zScore, "src/model/MNIST_96_08");
 
         System.out.println(100.0 * trueCounter/predictSize + "%");
 

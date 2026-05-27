@@ -2,7 +2,10 @@ package activation;
 
 import structure.Neuron;
 
-public interface OutputActivation
+import java.awt.*;
+import java.io.Serializable;
+
+public interface OutputActivation extends Serializable
 {
     public static double EPSILON = 1e-15;
 

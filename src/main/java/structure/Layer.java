@@ -4,9 +4,10 @@ import activation.HiddenActivation;
 import regularization.AlphaDropout;
 import regularization.Regulator;
 
+import java.io.Serializable;
 import java.util.stream.IntStream;
 
-public class Layer
+public class Layer implements Serializable
 {
     private final double [][] weight;
     private final double [][] weightGrad;
@@ -104,12 +105,44 @@ public class Layer
         }
     }
 
+    public double [] computeInputGradient(double [] input) {
+        double [] inputGrad = new double[input.length];
+
+        for(int i = 0; i < output.length; i++) {
+            //alphaDropout
+            output[i].multiplyGrad(dropout.derive(i));
+
+            double delta = output[i].grad * activation.derive(activationInput[i]);
+
+            for(int j = 0; j < input.length; j++) {
+                weightGrad[i][j] += input[j] * delta;
+
+                inputGrad[j] += weight[i][j] * delta;
+            }
+
+            biasGrad[i] += delta;
+        }
+
+        return inputGrad;
+    }
+
+    public double [] getDoubleOutput() {
+        double [] result = new double[output.length];
+
+        for(int i = 0; i < result.length; i++) {
+            result[i] = output[i].getValue();
+        }
+
+        return result;
+    }
+
     public int getOutputSize() { return weight.length; }
     public int getInputSize() { return weight[0].length; }
     public double [][] getWeight() { return weight; }
     public double [][] getWeightGrad() { return weightGrad; }
     public double [] getBias() { return bias; }
     public double [] getBiasGrad() { return biasGrad; }
+    public double [] getActivationInput() { return activationInput; }
     public Neuron [] getOutput() { return output; }
     public HiddenActivation getActivation() { return activation; }
 }

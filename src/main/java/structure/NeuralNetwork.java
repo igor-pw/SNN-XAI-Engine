@@ -8,13 +8,10 @@ import initialization.Initializer;
 import loss.AbstractLossFunc;
 import optimization.NAdam;
 import optimization.Optimizer;
-import regularization.AlphaDropout;
-import regularization.Regulator;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 
-public class NeuralNetwork
+public class NeuralNetwork implements Serializable
 {
     private final Layer[] layer;
     private final AbstractLossFunc lossFunc;
@@ -48,6 +45,8 @@ public class NeuralNetwork
         adamOptimizer = new NAdam(weightSize, biasSize);
     }
 
+
+
     public void initializeWeights(Initializer initializer) {
         initializer.initialize(layer);
     }
@@ -76,6 +75,20 @@ public class NeuralNetwork
         layer[0].backward(input);
     }
 
+    public void backwardWithTargetGrad(double [] target, double [] input) {
+        Neuron [] predicted = layer[layer.length - 1].getOutput();
+
+        for(int i = 0; i < predicted.length; i++) {
+            predicted[i].grad = target[i];
+        }
+
+        for(int i = layer.length - 1; i >= 1; i--) {
+            layer[i].backward(layer[i-1].getOutput());
+        }
+
+        layer[0].backward(input);
+    }
+
     private void prepareGrads(Neuron [] predicted, double [] target) {
         lossFunc.derive(predicted, target);
         outputActivation.derive(predicted, target);
@@ -95,5 +108,7 @@ public class NeuralNetwork
         }
     }
 
+    public Layer [] getLayer() { return layer; }
+    public Layer getLayer(int i)  { return layer[i]; }
     public double getCost() { return cost; }
 }

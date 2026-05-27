@@ -2,7 +2,9 @@ package regularization;
 
 import structure.Neuron;
 
-public interface Regulator
+import java.io.Serializable;
+
+public interface Regulator extends Serializable
 {
     void regulate(Neuron [] neuron);
     double derive(int i);

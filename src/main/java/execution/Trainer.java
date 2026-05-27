@@ -83,4 +83,18 @@ public class Trainer
 
         return result;
     }
+
+    public int argMax(double [] output) {
+        int bestIndex = 0;
+
+        for(int i = 0; i < output.length; i++) {
+            if(output[i] > output[bestIndex]) {
+                bestIndex = i;
+            }
+        }
+
+        return bestIndex;
+    }
+
+    public NeuralNetwork getNeuralNetwork() { return neuralNetwork; }
 }

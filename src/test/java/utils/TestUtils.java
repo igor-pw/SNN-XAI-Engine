@@ -4,7 +4,7 @@ public class TestUtils
 {
    private TestUtils() {};
 
-   static public int argMax(double [] output) {
+   /*static public int argMax(double [] output) {
       int bestIndex = 0;
 
       for(int i = 0; i < output.length; i++) {
@@ -14,7 +14,7 @@ public class TestUtils
       }
 
       return bestIndex;
-   }
+   }*/
 
    /*static public int depthFirstSearch(Scalar [] output) {
       AtomicInteger counter = new AtomicInteger(0);
