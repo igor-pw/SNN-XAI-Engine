@@ -11,7 +11,11 @@ import loss.AbstractLossFunc;
 import loss.CceLoss;
 import normalization.Normalizer;
 import normalization.ZScoreNormalizer;
+import optimization.GradientNormClipping;
+import optimization.NAdam;
 import org.junit.jupiter.api.Test;
+import structure.Layer;
+import structure.NeuralNetwork;
 
 import java.io.FileReader;
 
@@ -22,67 +26,44 @@ public class MnistTrainingTest {
     @Test
     public void  shouldCorrectlyPerformFullLearningProcess_andPredictOutputWithXAccuracy() {
         //given
-        double learningRate = 0.0000081;
-
-        int epoch = 10;
-        int batch = 20;
         int oneHotSize = 10;
         long seed = 42;
-        double threshold = 0.0;
-        String pathName = "src/test/resources/MNIST/mnist_train.csv";
+        String trainingPathName = "src/test/resources/MNIST/mnist_train.csv";
+        String testPathName = "src/test/resources/MNIST/mnist_test.csv";
 
-        int[] structure = {784, 256, 10};
-        OutputActivation softmax = new SoftmaxActivation();
-        AbstractLossFunc cce = new CceLoss();
         Initializer lecun = new LeCunInitializer(seed);
         Normalizer zScore = new ZScoreNormalizer();
 
-        //when
-        Trainer trainer = new Trainer(learningRate, epoch, batch);
+        NeuralNetwork neuralNetwork = new NeuralNetwork.Builder()
+                .addLayer(new Layer.Builder(784, 512).dropout(0.15))
+                .addLayer(new Layer.Builder(512, 10))
+                .outputActivation(new SoftmaxActivation())
+                .lossFunction(new CceLoss())
+                .optimizer(new NAdam.Builder()
+                        .epsilon(1e-8)
+                        .build())
+                .gradientClipping(new GradientNormClipping(5.0))
+                .build();
 
-        trainer.readData(pathName, 1);
+        Trainer trainer = new Trainer.Builder(neuralNetwork)
+                .learningRate(0.0008)
+                .epoch(25)
+                .batch(64)
+                .smoothing(0.03)
+                .decay(0.00003)
+                .build();
+
+        //when
+        trainer.readTrainingData(trainingPathName, 1);
+        trainer.readTestData(testPathName, 1);
         trainer.toOneHotEncoding(oneHotSize);
         trainer.normalizeData(zScore);
-        trainer.initNeuralNetwork(structure, cce, softmax, lecun, 0.2);
+        trainer.initNeuralNetwork(lecun);
 
         trainer.fit();
 
-        //when
-        int predictSize = 10000;
-        int [] expected = new int[predictSize];
-        double [][] input = new double[predictSize][];
-        try (CSVReader reader = new CSVReader(new FileReader("src/test/resources/MNIST/mnist_test.csv"))) {
-            String[] nextLine = reader.readNext();
-            for(int i = 0; i < predictSize; i++) {
-                nextLine = reader.readNext();
+        NeuralNetworkIO.save(trainer.getNeuralNetwork(), zScore, "src/model/MNIST_" + trainer.getTestAccuracy());
 
-                input[i] = new double[nextLine.length - 1];
-                for (int j = 0; j < nextLine.length - 1; j++) {
-                    input[i][j] = Double.parseDouble(nextLine[j]);
-                }
-                expected[i] = Integer.parseInt(nextLine[nextLine.length - 1]);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Error reading line: " + e.getMessage());
-        }
-
-        double [][] normalizedInput = zScore.normalizePredict(input);
-        int trueCounter = 0;
-
-        for(int i = 0; i < predictSize; i++) {
-            double[] result = trainer.predict(normalizedInput[i]);
-
-            int predicted_index = trainer.argMax(result);
-
-            if(expected[i] == predicted_index && result[predicted_index] > threshold) {
-                trueCounter++;
-            }
-        }
-
-        NeuralNetworkIO.save(trainer.getNeuralNetwork(), zScore, "src/model/MNIST_96_08");
-
-        System.out.println(100.0 * trueCounter/predictSize + "%");
-
-        assertTrue(trueCounter > 9000);
+        assertTrue(trainer.getTestAccuracy() > 95.00);
     }
 }

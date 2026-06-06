@@ -22,7 +22,7 @@ public class HeatmapGenerator
         BufferedImage smallPanel = new BufferedImage(totalWidth, height, BufferedImage.TYPE_INT_RGB);
 
         double threshold = 0.15;
-        int whiteLineColor = (255 << 16) | (255 << 8) | 255; // Biała kreska
+        int whiteLineColor = (255 << 16) | (255 << 8) | 255;
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
@@ -35,7 +35,7 @@ public class HeatmapGenerator
                 int grayRgb = (baseGray << 16) | (baseGray << 8) | baseGray;
                 smallPanel.setRGB(x, y, grayRgb);
 
-                int lrpRgb = 0; // domyślnie czarne tło
+                int lrpRgb = 0;
                 if (val > threshold) {
                     int intensity = (int) (val * 255);
                     lrpRgb = (intensity << 16);
@@ -43,7 +43,7 @@ public class HeatmapGenerator
                     int intensity = (int) (Math.abs(val) * 255);
                     lrpRgb = intensity;
                 }
-                smallPanel.setRGB(x + width + 1, y, lrpRgb); // +1 za pierwszą kreskę
+                smallPanel.setRGB(x + width + 1, y, lrpRgb);
 
                 int targetR = baseGray;
                 int targetG = baseGray;
@@ -67,11 +67,11 @@ public class HeatmapGenerator
                 int b = (int) ((1.0 - alpha) * baseGray + alpha * targetB);
                 int overlayRgb = (r << 16) | (g << 8) | b;
 
-                smallPanel.setRGB(x + (width * 2) + 2, y, overlayRgb); // +2 za obie kreski
+                smallPanel.setRGB(x + (width * 2) + 2, y, overlayRgb);
             }
 
-            smallPanel.setRGB(width, y, whiteLineColor);             // Kreska między sekcją 1 a 2
-            smallPanel.setRGB((width * 2) + 1, y, whiteLineColor);     // Kreska między sekcją 2 a 3
+            smallPanel.setRGB(width, y, whiteLineColor);
+            smallPanel.setRGB((width * 2) + 1, y, whiteLineColor);
         }
 
         int scale = 10;
@@ -89,7 +89,46 @@ public class HeatmapGenerator
             String fullPath = System.getProperty("user.dir") + File.separator + fileName;
             ImageIO.write(finalPanel, "png", new File(fullPath));
         } catch (IOException e) {
-            System.err.println("[XAI-Panel] Błąd zapisu heatmapy: " + e.getMessage());
+            System.err.println("Error saving heatmap: " + e.getMessage());
+        }
+    }
+
+    public void saveGeneratedPatternAsImage(double[] input, int width, int height, String fileName) {
+        double minVal = Double.MAX_VALUE;
+        double maxVal = -Double.MAX_VALUE;
+        for (int i = 0; i < input.length; i++) {
+            if (input[i] < minVal) minVal = input[i];
+            if (input[i] > maxVal) maxVal = input[i];
+        }
+
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int index = y * width + x;
+                double value = input[index];
+
+                if (maxVal > minVal) {
+                    value = (value - minVal) / (maxVal - minVal);
+                }
+
+                int gray = (int) (value * 255);
+
+                if (gray < 0) gray = 0;
+                if (gray > 255) gray = 255;
+
+                // Składamy kolor RGB
+                int rgb = (gray << 16) | (gray << 8) | gray;
+
+                image.setRGB(x, y, rgb);
+            }
+        }
+
+        try {
+            String fullPath = System.getProperty("user.dir") + File.separator + fileName;
+            ImageIO.write(image, "png", new File(fullPath));
+        } catch (IOException e) {
+            System.err.println("Error saving image: " + e.getMessage());
         }
     }
 }

@@ -11,7 +11,7 @@ public class NeuralNetworkIO
 
         File outputFile = new File(fullPath);
         if (outputFile.getParentFile() != null) {
-            outputFile.getParentFile().mkdirs(); // Tworzy np. src/test/resources jeśli ich nie ma
+            outputFile.getParentFile().mkdirs();
         }
 
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(outputFile))) {
@@ -20,7 +20,7 @@ public class NeuralNetworkIO
             oos.writeObject(normalizer);
 
         } catch (IOException e) {
-            System.err.println("[IO] Błąd podczas zapisu: " + e.getMessage());
+            System.err.println("Error saving: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -36,7 +36,7 @@ public class NeuralNetworkIO
             return new Object[] { neuralNetwork, normalizer };
 
         } catch (IOException | ClassNotFoundException e) {
-            System.err.println("podczas wczytywania: " + e.getMessage());
+            System.err.println("Error writing: " + e.getMessage());
             e.printStackTrace();
             return null;
         }

@@ -17,7 +17,7 @@ public class MnistLayerwiseGradientFeatureAttributionTest
         double alpha = 0.5;
         double beta = 0.5;
 
-        Object [] model = NeuralNetworkIO.load("src/model/MNIST_96_08");
+        Object [] model = NeuralNetworkIO.load("src/model/MNIST_98.05");
         NeuralNetwork neuralNetwork = (NeuralNetwork) model[0];
         Normalizer zScore = (Normalizer) model[1];
         HeatmapGenerator heatmapGenerator = new HeatmapGenerator();

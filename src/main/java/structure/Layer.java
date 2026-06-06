@@ -1,6 +1,7 @@
 package structure;
 
 import activation.HiddenActivation;
+import activation.SeluActivation;
 import regularization.AlphaDropout;
 import regularization.Regulator;
 
@@ -17,6 +18,47 @@ public class Layer implements Serializable
     private final Neuron [] output;
     private final HiddenActivation activation;
     private final Regulator dropout;
+
+    private Layer(Builder builder, HiddenActivation activation) {
+        int inputSize = builder.input;
+        int outputSize = builder.output;
+
+        weight = new double[outputSize][inputSize];
+        weightGrad = new double[outputSize][inputSize];
+        bias = new double[outputSize];
+        biasGrad = new double[outputSize];
+        activationInput = new double[outputSize];
+        output = new Neuron[outputSize];
+
+        this.activation = activation;
+
+        for (int i = 0; i < weight.length; i++) {
+            output[i] = new Neuron();
+            bias[i] = 0.1;
+        }
+
+        dropout = new AlphaDropout(outputSize, builder.dropout);
+    }
+
+    public static class Builder {
+        private final int input;
+        private final int output;
+        private double dropout;
+
+        public Builder(int input, int output) {
+            this.input = input;
+            this.output = output;
+        }
+
+        public Builder dropout(double dropout) {
+            this.dropout = dropout;
+            return this;
+        }
+
+        public Layer build(HiddenActivation activation) {
+            return new Layer(this, activation);
+        }
+    }
 
     public Layer(int prevSize, int currentSize, HiddenActivation activation, double probability) {
         weight = new double[currentSize][prevSize];

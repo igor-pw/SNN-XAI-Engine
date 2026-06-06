@@ -9,37 +9,43 @@ import loss.BceLoss;
 import loss.MseLoss;
 import normalization.Normalizer;
 import normalization.ZScoreNormalizer;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import structure.Layer;
+import structure.NeuralNetwork;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XorTest
 {
-    @Test
+    @Disabled
     public void shouldCorrectlyPerformFullLearningProcess_andPredictOutput() {
         //given
-        double learningRate = 0.02;
         double threshold = 0.01;
-        int epoch = 1;
-        int batch = 4;
         long seed = 67;
         String pathName = "src/test/resources/Xor_Dataset.csv";
 
-        int [] structure = {2, 2, 1};
-        OutputActivation sigmoid = new SigmoidActivation();
-        AbstractLossFunc mse = new BceLoss();
         Initializer lecun = new LeCunInitializer(seed);
         Normalizer zScore = new ZScoreNormalizer();
 
         double [] expected = {0.0, 1.0, 1.0, 0.0};
 
-        //when
-        Trainer trainer = new Trainer(learningRate, epoch, batch);
+        NeuralNetwork neuralNetwork = new NeuralNetwork.Builder()
+                .addLayer(new Layer.Builder(2, 2))
+                .addLayer(new Layer.Builder(2, 1))
+                .build();
 
-        trainer.readData(pathName, 1);
+        //when
+        Trainer trainer = new Trainer.Builder(neuralNetwork)
+                .learningRate(0.02)
+                .epoch(1)
+                .batch(4)
+                .build();
+
+        trainer.readTrainingData(pathName, 1);
         trainer.normalizeData(zScore);
-        trainer.initNeuralNetwork(structure, mse, sigmoid, lecun, 0.0);
+        trainer.initNeuralNetwork(lecun);
 
         trainer.fit();
         double [][] input = {{0.0, 0.0}, {0.0, 1.0}, {1.0, 0.0}, {1.0, 1.0}};

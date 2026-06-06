@@ -14,10 +14,10 @@ public class MnistLayerwiseRelevancePropagationTest {
 
     @Test
     public void shouldPerformLayerwiseRelevancePropagation() {
-        double alpha = 2.0;
-        double beta = 1.0;
+        double alpha = 1.0;
+        double beta = 0.0;
 
-        Object [] model = NeuralNetworkIO.load("src/model/MNIST_96_08");
+        Object [] model = NeuralNetworkIO.load("src/model/MNIST_98.05");
         NeuralNetwork neuralNetwork = (NeuralNetwork) model[0];
         Normalizer zScore = (Normalizer) model[1];
         HeatmapGenerator heatmapGenerator = new HeatmapGenerator();

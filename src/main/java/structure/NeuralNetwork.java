@@ -1,15 +1,16 @@
 package structure;
 
-import activation.HiddenActivation;
-import activation.LinearActivation;
-import activation.OutputActivation;
-import activation.SeluActivation;
+import activation.*;
 import initialization.Initializer;
 import loss.AbstractLossFunc;
+import loss.MseLoss;
+import optimization.GradientNormClipping;
 import optimization.NAdam;
 import optimization.Optimizer;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NeuralNetwork implements Serializable
 {
@@ -17,9 +18,75 @@ public class NeuralNetwork implements Serializable
     private final AbstractLossFunc lossFunc;
     private final OutputActivation outputActivation;
     private final Optimizer adamOptimizer;
+    private final GradientNormClipping gradientNormClipping;
     private double cost = 0.0;
 
-    public NeuralNetwork(int[] structure, AbstractLossFunc lossFunc, OutputActivation outputActivation, double dropout) {
+    private NeuralNetwork(Builder builder) {
+        int layerSize = builder.layerBuilder.size();
+        this.layer = new Layer[layerSize];
+
+        int weightSize = 0;
+        int biasSize = 0;
+
+        for(int i = 0; i < layerSize; i++) {
+            Layer.Builder layerBuilder = builder.layerBuilder.get(i);
+
+            if(i == layerSize - 1) {
+                this.layer[i] = layerBuilder.build(new LinearActivation());
+            }
+            else {
+                this.layer[i] = layerBuilder.build(new SeluActivation());
+            }
+
+            weightSize += layer[i].getInputSize() * layer[i].getOutputSize();
+            biasSize += layer[i].getOutputSize();
+        }
+
+        this.lossFunc = builder.lossFunc;
+        this.outputActivation = builder.outputActivation;
+        this.adamOptimizer = builder.adamOptimizer;
+        this.adamOptimizer.init(weightSize, biasSize);
+        this.gradientNormClipping = builder.gradientNormClipping;
+    }
+
+    public static class Builder {
+        private final List<Layer.Builder> layerBuilder = new ArrayList<>();
+        private AbstractLossFunc lossFunc = new MseLoss();
+        private OutputActivation outputActivation = new ReluActivation();
+        private Optimizer adamOptimizer = new NAdam.Builder().build();
+        private GradientNormClipping gradientNormClipping = new GradientNormClipping(1.0);
+
+        public Builder addLayer(Layer.Builder layerBuilder) {
+            this.layerBuilder.add(layerBuilder);
+            return this;
+        }
+
+        public Builder lossFunction(AbstractLossFunc lossFunc) {
+            this.lossFunc = lossFunc;
+            return this;
+        }
+
+        public Builder outputActivation(OutputActivation outputActivation) {
+            this.outputActivation = outputActivation;
+            return this;
+        }
+
+        public Builder optimizer(Optimizer optimizer) {
+            this.adamOptimizer = optimizer;
+            return this;
+        }
+
+        public Builder gradientClipping(GradientNormClipping gradientNormClipping) {
+            this.gradientNormClipping = gradientNormClipping;
+            return this;
+        }
+
+        public NeuralNetwork build() {
+            return new NeuralNetwork(this);
+        }
+    }
+
+    /*public NeuralNetwork(int[] structure, AbstractLossFunc lossFunc, OutputActivation outputActivation, double dropout, double maxNorm) {
         this.outputActivation = outputActivation;
         int layerNumber = structure.length - 1;
         layer = new Layer[layerNumber];
@@ -43,9 +110,8 @@ public class NeuralNetwork implements Serializable
         }
 
         adamOptimizer = new NAdam(weightSize, biasSize);
-    }
-
-
+        gradientNormClipping = new GradientNormClipping(maxNorm);
+    }*/
 
     public void initializeWeights(Initializer initializer) {
         initializer.initialize(layer);
@@ -95,6 +161,7 @@ public class NeuralNetwork implements Serializable
     }
 
     public void updateNetwork(double learningRate, int batch) {
+        gradientNormClipping.optimize(layer);
         adamOptimizer.optimize(layer, learningRate, batch);
         clearGraph();
     }

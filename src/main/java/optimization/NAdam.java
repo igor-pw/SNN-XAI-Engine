@@ -4,20 +4,51 @@ import structure.Layer;
 
 public class NAdam implements Optimizer
 {
-    private static final double beta1 = 0.9;
-    private static final double beta2 = 0.999;
-    private static final double epsilon = 1e-6;
-    private final double [] weightMomentum;
-    private final double [] weightVelocity;
-    private final double [] biasMomentum;
-    private final double [] biasVelocity;
+    private final double beta1;
+    private final double beta2;
+    private final double epsilon;
+    private double [] weightMomentum;
+    private double [] weightVelocity;
+    private double [] biasMomentum;
+    private double [] biasVelocity;
     private int steps = 0;
 
-    public NAdam(int weightSize, int biasSize) {
+    private NAdam(Builder builder) {
+        this.beta1 = builder.beta1;
+        this.beta2 = builder.beta2;
+        this.epsilon = builder.epsilon;
+    }
+
+    public void init(int weightSize, int biasSize) {
         weightMomentum = new double[weightSize];
         weightVelocity = new double[weightSize];
         biasMomentum = new double[biasSize];
         biasVelocity = new double[biasSize];
+    }
+
+    public static class Builder {
+        private double beta1 = 0.9;
+        private double beta2 = 0.999;
+        private double epsilon = 1e-8;
+
+        public Builder beta1(double beta1) {
+            this.beta1 = beta1;
+            return this;
+        }
+
+        public Builder beta2(double beta2) {
+            this.beta2 = beta2;
+            return this;
+        }
+
+        public Builder epsilon(double epsilon) {
+            this.epsilon = epsilon;
+            return this;
+        }
+
+        public NAdam build() {
+            return new NAdam(this);
+        }
     }
 
     @Override
@@ -50,7 +81,7 @@ public class NAdam implements Optimizer
                 bias[j] -= (learningRate * mHat) / (Math.sqrt(vHat) + epsilon);
                 biasIndex++;
 
-                for (int k = 0; k < weight[0].length; k++) {
+                for (int k = 0; k < weight[j].length; k++) {
                     grad = weightGrad[j][k] / batch;
 
                     weightMomentum[weightIndex] = (beta1 * weightMomentum[weightIndex] + (1 - beta1) * grad);
@@ -64,7 +95,6 @@ public class NAdam implements Optimizer
                     mHat = beta1 * mHat + (1 - beta1) * gHat;
 
                     weight[j][k] -= (learningRate * mHat) / (Math.sqrt(vHat) + epsilon);
-
                     weightIndex++;
                 }
             }
