@@ -9,6 +9,7 @@ import loss.BceLoss;
 import loss.MseLoss;
 import normalization.Normalizer;
 import normalization.ZScoreNormalizer;
+import optimization.NAdam;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import structure.Layer;
@@ -19,48 +20,39 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XorTest
 {
-    @Disabled
+    @Test
     public void shouldCorrectlyPerformFullLearningProcess_andPredictOutput() {
         //given
-        double threshold = 0.01;
-        long seed = 67;
+        long seed = 42;
         String pathName = "src/test/resources/Xor_Dataset.csv";
 
         Initializer lecun = new LeCunInitializer(seed);
         Normalizer zScore = new ZScoreNormalizer();
 
-        double [] expected = {0.0, 1.0, 1.0, 0.0};
-
         NeuralNetwork neuralNetwork = new NeuralNetwork.Builder()
-                .addLayer(new Layer.Builder(2, 2))
+                .addLayer(new Layer.Builder(4, 2))
                 .addLayer(new Layer.Builder(2, 1))
+                .outputActivation(new SigmoidActivation())
+                .lossFunction(new BceLoss())
+                .optimizer(new NAdam.Builder().build())
                 .build();
 
         //when
         Trainer trainer = new Trainer.Builder(neuralNetwork)
-                .learningRate(0.02)
-                .epoch(1)
+                .learningRate(0.001f)
+                .epoch(5)
                 .batch(4)
                 .build();
 
         trainer.readTrainingData(pathName, 1);
+        trainer.readTestData(pathName, 1);
         trainer.normalizeData(zScore);
         trainer.initNeuralNetwork(lecun);
 
         trainer.fit();
-        double [][] input = {{0.0, 0.0}, {0.0, 1.0}, {1.0, 0.0}, {1.0, 1.0}};
 
-        double [][] normalizedInput = zScore.normalizePredict(input);
-        double [] predicted = new double[expected.length];
-
-        for(int i = 0; i < normalizedInput.length; i++) {
-            predicted[i] = trainer.predict(normalizedInput[i])[0];
-        }
 
         //then
-        for(int i = 0; i < expected.length; i++) {
-            System.out.println(predicted[i]);
-            assertEquals(expected[i], predicted[i], threshold);
-        }
+        assertTrue(trainer.getTestAccuracy() > 99.00);
     }
 }

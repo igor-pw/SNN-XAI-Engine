@@ -3,12 +3,12 @@ package activation;
 public class LinearActivation implements HiddenActivation
 {
     @Override
-    public double activate(double input) {
+    public float activate(float input) {
         return input;
     }
 
     @Override
-    public double derive(double input) {
-        return 1.0;
+    public float derive(float input) {
+        return 1.0f;
     }
 }

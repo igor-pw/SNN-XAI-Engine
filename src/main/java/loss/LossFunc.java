@@ -4,6 +4,6 @@ import structure.Neuron;
 
 public interface LossFunc
 {
-    double compute(Neuron [] predicted, double [] target);
-    void derive(Neuron [] predicted, double [] target);
+    float compute(Neuron [] predicted, float [] target);
+    void derive(Neuron [] predicted, float [] target);
 }

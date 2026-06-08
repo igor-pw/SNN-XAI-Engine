@@ -7,5 +7,5 @@ import java.io.Serializable;
 public interface Regulator extends Serializable
 {
     void regulate(Neuron [] neuron);
-    double derive(int i);
+    float derive(int i);
 }

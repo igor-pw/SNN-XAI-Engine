@@ -6,9 +6,9 @@ import java.io.Serializable;
 
 public class GradientNormClipping implements Serializable
 {
-    private final double maxNorm;
+    private final float maxNorm;
 
-    public GradientNormClipping(double maxNorm) {
+    public GradientNormClipping(float maxNorm) {
         if(maxNorm <= 0.0) {
             throw new IllegalArgumentException("Invalid maxNorm value");
         }
@@ -16,10 +16,10 @@ public class GradientNormClipping implements Serializable
     }
 
     public void optimize(Layer[] layer) {
-        double gradientNorm = 0.0;
+        float gradientNorm = 0.0f;
         for(int i = 0; i < layer.length; i++) {
-            double [] biasGrad = layer[i].getBiasGrad();
-            double [][] weightGrad = layer[i].getWeightGrad();
+            float [] biasGrad = layer[i].getBiasGrad();
+            float [][] weightGrad = layer[i].getWeightGrad();
 
             for(int j = 0; j < weightGrad.length; j++) {
                 gradientNorm += biasGrad[j]*biasGrad[j];
@@ -30,12 +30,12 @@ public class GradientNormClipping implements Serializable
             }
         }
 
-        gradientNorm = Math.sqrt(gradientNorm);
+        gradientNorm = (float)Math.sqrt(gradientNorm);
         gradientNorm = maxNorm/(Math.max(maxNorm, gradientNorm));
 
         for(int i = 0; i < layer.length; i++) {
-            double [] biasGrad = layer[i].getBiasGrad();
-            double [][] weightGrad = layer[i].getWeightGrad();
+            float [] biasGrad = layer[i].getBiasGrad();
+            float [][] weightGrad = layer[i].getWeightGrad();
 
             for(int j = 0; j < weightGrad.length; j++) {
                 biasGrad[j] *= gradientNorm;

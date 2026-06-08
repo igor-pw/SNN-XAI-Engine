@@ -19,14 +19,11 @@ public class NeuralNetwork implements Serializable
     private final OutputActivation outputActivation;
     private final Optimizer adamOptimizer;
     private final GradientNormClipping gradientNormClipping;
-    private double cost = 0.0;
+    private float cost = 0.0f;
 
     private NeuralNetwork(Builder builder) {
         int layerSize = builder.layerBuilder.size();
         this.layer = new Layer[layerSize];
-
-        int weightSize = 0;
-        int biasSize = 0;
 
         for(int i = 0; i < layerSize; i++) {
             Layer.Builder layerBuilder = builder.layerBuilder.get(i);
@@ -37,15 +34,12 @@ public class NeuralNetwork implements Serializable
             else {
                 this.layer[i] = layerBuilder.build(new SeluActivation());
             }
-
-            weightSize += layer[i].getInputSize() * layer[i].getOutputSize();
-            biasSize += layer[i].getOutputSize();
         }
 
         this.lossFunc = builder.lossFunc;
         this.outputActivation = builder.outputActivation;
         this.adamOptimizer = builder.adamOptimizer;
-        this.adamOptimizer.init(weightSize, biasSize);
+        this.adamOptimizer.init(layer);
         this.gradientNormClipping = builder.gradientNormClipping;
     }
 
@@ -54,7 +48,7 @@ public class NeuralNetwork implements Serializable
         private AbstractLossFunc lossFunc = new MseLoss();
         private OutputActivation outputActivation = new ReluActivation();
         private Optimizer adamOptimizer = new NAdam.Builder().build();
-        private GradientNormClipping gradientNormClipping = new GradientNormClipping(1.0);
+        private GradientNormClipping gradientNormClipping = new GradientNormClipping(1.0f);
 
         public Builder addLayer(Layer.Builder layerBuilder) {
             this.layerBuilder.add(layerBuilder);
@@ -86,38 +80,11 @@ public class NeuralNetwork implements Serializable
         }
     }
 
-    /*public NeuralNetwork(int[] structure, AbstractLossFunc lossFunc, OutputActivation outputActivation, double dropout, double maxNorm) {
-        this.outputActivation = outputActivation;
-        int layerNumber = structure.length - 1;
-        layer = new Layer[layerNumber];
-        this.lossFunc = lossFunc;
-
-        HiddenActivation selu = new SeluActivation();
-        HiddenActivation linear = new LinearActivation();
-
-        for(int i = 0; i < layerNumber - 1; i++) {
-            layer[i] = new Layer(structure[i], structure[i+1], selu, dropout);
-        }
-
-        layer[layerNumber - 1] = new Layer(structure[layerNumber - 1], structure[layerNumber], linear, 0.0);
-
-        int weightSize = 0;
-        int biasSize = 0;
-
-        for(int i = 0; i < structure.length - 1; i++) {
-            weightSize += structure[i]*structure[i+1];
-            biasSize += structure[i+1];
-        }
-
-        adamOptimizer = new NAdam(weightSize, biasSize);
-        gradientNormClipping = new GradientNormClipping(maxNorm);
-    }*/
-
     public void initializeWeights(Initializer initializer) {
         initializer.initialize(layer);
     }
 
-    public Neuron [] forward(double [] input, boolean training) {
+    public Neuron [] forward(float [] input, boolean training) {
         Neuron [] predicted = layer[0].forward(input, training);
 
         for(int i = 1; i < layer.length; i++) {
@@ -128,7 +95,7 @@ public class NeuralNetwork implements Serializable
         return predicted;
     }
 
-    public void backward(double [] target, double [] input) {
+    public void backward(float [] target, float [] input) {
         Neuron [] predicted = layer[layer.length - 1].getOutput();
         cost = lossFunc.compute(predicted, target);
 
@@ -141,7 +108,7 @@ public class NeuralNetwork implements Serializable
         layer[0].backward(input);
     }
 
-    public void backwardWithTargetGrad(double [] target, double [] input) {
+    public void backwardWithTargetGrad(float [] target, float [] input) {
         Neuron [] predicted = layer[layer.length - 1].getOutput();
 
         for(int i = 0; i < predicted.length; i++) {
@@ -155,12 +122,12 @@ public class NeuralNetwork implements Serializable
         layer[0].backward(input);
     }
 
-    private void prepareGrads(Neuron [] predicted, double [] target) {
+    private void prepareGrads(Neuron [] predicted, float [] target) {
         lossFunc.derive(predicted, target);
         outputActivation.derive(predicted, target);
     }
 
-    public void updateNetwork(double learningRate, int batch) {
+    public void updateNetwork(float learningRate, int batch) {
         gradientNormClipping.optimize(layer);
         adamOptimizer.optimize(layer, learningRate, batch);
         clearGraph();
@@ -169,13 +136,18 @@ public class NeuralNetwork implements Serializable
     private void clearGraph() {
         for(Layer nLayer : layer) {
             for(Neuron neuron : nLayer.getOutput()) {
-                neuron.setValue(0.0);
-                neuron.setGrad(0.0);
+                neuron.setValue(0.0f);
+                neuron.setGrad(0.0f);
             }
         }
     }
 
+    public float calculateLoss(float [] target) {
+        Neuron [] predicted = layer[layer.length - 1].getOutput();
+        return lossFunc.compute(predicted, target);
+    }
+
     public Layer [] getLayer() { return layer; }
     public Layer getLayer(int i)  { return layer[i]; }
-    public double getCost() { return cost; }
+    public float getCost() { return cost; }
 }

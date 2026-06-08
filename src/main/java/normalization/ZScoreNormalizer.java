@@ -2,21 +2,21 @@ package normalization;
 
 public class ZScoreNormalizer implements Normalizer
 {
-    private double [] mean;
-    private double [] std;
+    private float [] mean;
+    private float [] std;
 
     @Override
-    public double [][] normalize(double [][] data) {
+    public float [][] normalize(float [][] data) {
         int rows = data.length;
         int cols = data[0].length;
 
-        double [][] result = new double[rows][cols];
-        mean = new double[cols];
-        std = new double[cols];
+        float [][] result = new float[rows][cols];
+        mean = new float[cols];
+        std = new float[cols];
 
         for(int i = 0; i < cols; i++) {
-            double mean = 0.0;
-            double std = 0.0;
+            float mean = 0.0f;
+            float std = 0.0f;
 
             for(int j = 0; j < rows; j++) {
                 mean += data[j][i];
@@ -25,14 +25,14 @@ public class ZScoreNormalizer implements Normalizer
             mean /= rows;
 
             for(int j = 0; j < rows; j++) {
-                std += Math.pow((data[j][i] - mean), 2);
+                std += (float)Math.pow((data[j][i] - mean), 2);
             }
 
             std /= rows;
-            std = Math.sqrt(std);
+            std = (float)Math.sqrt(std);
 
             for(int j = 0; j < rows; j++) {
-                result [j][i] = (data[j][i] - mean) / (std + 1e-15);
+                result [j][i] = (data[j][i] - mean) / (std + 1e-15f);
             }
 
             this.mean[i] = mean;
@@ -42,14 +42,14 @@ public class ZScoreNormalizer implements Normalizer
         return result;
     }
 
-    public double [][] normalizePredict(double [][] data) {
+    public float [][] normalizePredict(float [][] data) {
         int rows = data.length;
         int cols = data[0].length;
 
-        double [][] result = new double[rows][cols];
+        float [][] result = new float[rows][cols];
         for(int i = 0; i < cols; i++) {
             for(int j = 0; j < rows; j++) {
-                result[j][i] = (data[j][i] - mean[i]) / (std[i] + 1e-15);
+                result[j][i] = (data[j][i] - mean[i]) / (std[i] + 1e-15f);
             }
         }
 

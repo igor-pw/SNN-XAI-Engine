@@ -7,8 +7,8 @@ import java.io.Serializable;
 
 public interface OutputActivation extends Serializable
 {
-    public static double EPSILON = 1e-15;
+    public static float EPSILON = 1e-12f;
 
     void activate(Neuron[] input);
-    void derive(Neuron [] predicted, double [] target);
+    void derive(Neuron [] predicted, float [] target);
 }

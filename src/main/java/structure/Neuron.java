@@ -8,12 +8,12 @@ import java.io.Serializable;
 
 public class Neuron implements Serializable
 {
-    double value = 0.0;
-    double grad = 0.0;
+    float value = 0.0f;
+    float grad = 0.0f;
 
-    public double getGrad() { return grad; }
-    public void setGrad(double grad) {this.grad = grad; }
-    public void multiplyGrad(double grad) { this.grad *= grad; }
-    public double getValue() { return value; }
-    public void setValue(double value) { this.value = value; }
+    public float getGrad() { return grad; }
+    public void setGrad(float grad) {this.grad = grad; }
+    public void multiplyGrad(float grad) { this.grad *= grad; }
+    public float getValue() { return value; }
+    public void setValue(float value) { this.value = value; }
 }

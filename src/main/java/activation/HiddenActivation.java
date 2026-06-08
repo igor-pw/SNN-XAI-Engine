@@ -4,6 +4,6 @@ import java.io.Serializable;
 
 public interface HiddenActivation extends Serializable
 {
-    double activate(double input);
-    double derive(double input);
+    float activate(float input);
+    float derive(float input);
 }

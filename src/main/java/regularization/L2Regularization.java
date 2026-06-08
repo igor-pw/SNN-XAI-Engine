@@ -4,21 +4,21 @@ import structure.Layer;
 
 public class L2Regularization
 {
-    private final double decay;
+    private final float decay;
 
     public L2Regularization() {
-        this.decay = 0.0001;
+        this.decay = 0.0001f;
     }
 
-    public L2Regularization(double decay) {
+    public L2Regularization(float decay) {
         this.decay = decay;
     }
 
-    public double regulate(Layer [] layer) {
-        double loss = 0.0;
+    public float regulate(Layer [] layer) {
+        float loss = 0.0f;
         for(int i = 0; i < layer.length; i++) {
-            double [][] weight = layer[i].getWeight();
-            double [][] weightGrad = layer[i].getWeightGrad();
+            float [][] weight = layer[i].getWeight();
+            float [][] weightGrad = layer[i].getWeightGrad();
 
             for(int j = 0; j < weight.length; j++) {
                 for(int k = 0; k < weight[j].length; k++) {

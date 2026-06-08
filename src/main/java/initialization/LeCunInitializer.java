@@ -14,16 +14,16 @@ public class LeCunInitializer implements Initializer
 
     @Override
     public void initialize(Layer... layer) {
-        double std;
-        double [][] weight;
+        float std;
+        float [][] weight;
 
         for(int i = 0; i < layer.length; i++) {
             weight = layer[i].getWeight();
-            std = Math.sqrt(1.0 / (double)layer[i].getInputSize());
+            std = (float)Math.sqrt(1.0 / layer[i].getInputSize());
 
             for(int j = 0; j < layer[i].getOutputSize(); j++) {
                 for(int k = 0; k < layer[i].getInputSize(); k++) {
-                    weight[j][k] = rand.nextGaussian()*std;
+                    weight[j][k] = (float)rand.nextGaussian()*std;
                 }
             }
         }

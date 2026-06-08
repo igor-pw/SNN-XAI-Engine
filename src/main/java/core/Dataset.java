@@ -6,12 +6,12 @@ import java.util.*;
 
 public class Dataset
 {
-    private double [][] features;
-    private double [][] target;
+    private float [][] features;
+    private final float [][] target;
     private final int [] index;
     private final Random random = new Random(42);
 
-    public Dataset(double [][] features, double [][] target) {
+    public Dataset(float [][] features, float [][] target) {
         this.features = features;
         this.target = target;
 
@@ -39,15 +39,15 @@ public class Dataset
     public void toOneHotEncoding(int size) {
 
         for(int i = 0; i < target.length; i++) {
-            double [] oneHot = new double[size];
+            float [] oneHot = new float[size];
             int label = (int) target[i][0];
-            oneHot[label] = 1.0;
+            oneHot[label] = 1.0f;
             target[i] = oneHot;
         }
     }
 
-    public double [] getFeatures(int i) { return features[index[i]]; }
-    public double [][] getFeatures() { return features; }
-    public double [] getTarget(int i) { return target[index[i]]; }
-    public double [][] getTarget() { return target; }
+    public float [] getFeatures(int i) { return features[index[i]]; }
+    public float [][] getFeatures() { return features; }
+    public float [] getTarget(int i) { return target[index[i]]; }
+    public float [][] getTarget() { return target; }
 }

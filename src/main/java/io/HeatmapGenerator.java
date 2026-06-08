@@ -7,30 +7,30 @@ import java.io.IOException;
 
 public class HeatmapGenerator
 {
-    public void saveHeatmapPanel(double[] originalInput, double[] input, int width, int height, String fileName) {
-        double maxLrp = 1e-9;
-        for (double r : input) {
+    public void saveHeatmapPanel(float[] originalInput, float[] input, int width, int height, String fileName) {
+        float maxLrp = 1e-9f;
+        for (float r : input) {
             if (Math.abs(r) > maxLrp) maxLrp = Math.abs(r);
         }
 
-        double maxOrig = 1e-9;
-        for (double v : originalInput) {
+        float maxOrig = 1e-9f;
+        for (float v : originalInput) {
             if (v > maxOrig) maxOrig = v;
         }
 
         int totalWidth = (width * 3) + 2;
         BufferedImage smallPanel = new BufferedImage(totalWidth, height, BufferedImage.TYPE_INT_RGB);
 
-        double threshold = 0.15;
+        float threshold = 0.15f;
         int whiteLineColor = (255 << 16) | (255 << 8) | 255;
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 int index = y * width + x;
 
-                double origVal = originalInput[index];
+                float origVal = originalInput[index];
                 int baseGray = (int) ((origVal / maxOrig) * 255);
-                double val = input[index] / maxLrp;
+                float val = input[index] / maxLrp;
 
                 int grayRgb = (baseGray << 16) | (baseGray << 8) | baseGray;
                 smallPanel.setRGB(x, y, grayRgb);
@@ -48,7 +48,7 @@ public class HeatmapGenerator
                 int targetR = baseGray;
                 int targetG = baseGray;
                 int targetB = baseGray;
-                double alpha = 0.0;
+                float alpha = 0.0f;
 
                 if (val > threshold) {
                     targetR = 255;
@@ -93,9 +93,9 @@ public class HeatmapGenerator
         }
     }
 
-    public void saveGeneratedPatternAsImage(double[] input, int width, int height, String fileName) {
-        double minVal = Double.MAX_VALUE;
-        double maxVal = -Double.MAX_VALUE;
+    public void saveGeneratedPatternAsImage(float[] input, int width, int height, String fileName) {
+        float minVal = Float.MAX_VALUE;
+        float maxVal = -Float.MAX_VALUE;
         for (int i = 0; i < input.length; i++) {
             if (input[i] < minVal) minVal = input[i];
             if (input[i] > maxVal) maxVal = input[i];
@@ -106,7 +106,7 @@ public class HeatmapGenerator
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 int index = y * width + x;
-                double value = input[index];
+                float value = input[index];
 
                 if (maxVal > minVal) {
                     value = (value - minVal) / (maxVal - minVal);
@@ -117,7 +117,6 @@ public class HeatmapGenerator
                 if (gray < 0) gray = 0;
                 if (gray > 255) gray = 255;
 
-                // Składamy kolor RGB
                 int rgb = (gray << 16) | (gray << 8) | gray;
 
                 image.setRGB(x, y, rgb);

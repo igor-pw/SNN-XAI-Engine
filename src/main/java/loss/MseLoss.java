@@ -5,27 +5,27 @@ import structure.Neuron;
 public class MseLoss extends AbstractLossFunc
 {
     @Override
-    public double compute(Neuron[] predicted, double [] target) {
+    public float compute(Neuron[] predicted, float [] target) {
         validate(predicted, target);
 
         int size = predicted.length;
-        double loss = 0.0;
+        float loss = 0.0f;
 
         for(int i = 0; i < size; i++) {
-            loss += Math.pow(predicted[i].getValue() - target[i], 2);
+            loss += (float)Math.pow(predicted[i].getValue() - target[i], 2);
         }
 
         return loss/size;
     }
 
     @Override
-    public void derive(Neuron [] predicted, double [] target) {
+    public void derive(Neuron [] predicted, float [] target) {
         validate(predicted, target);
 
         int size = predicted.length;
 
         for(int i = 0; i < size; i++) {
-            double grad = 2 * (predicted[i].getValue() - target[i]);
+            float grad = 2.0f * (predicted[i].getValue() - target[i]);
             predicted[i].setGrad(grad);
         }
     }

@@ -4,6 +4,6 @@ import java.io.Serializable;
 
 public interface Normalizer extends Serializable
 {
-    double [][] normalize(double [][] data);
-    double [][] normalizePredict(double [][] data);
+    float [][] normalize(float [][] data);
+    float [][] normalizePredict(float [][] data);
 }

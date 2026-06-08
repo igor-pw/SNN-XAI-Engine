@@ -6,26 +6,26 @@ import structure.Neuron;
 
 public class LayerwiseGradientFeatureAttribution
 {
-    private final double [] saliencyMaps;
-    private final double [] sensitvityMaps;
+    private final float [] saliencyMaps;
+    private final float [] sensitivityMaps;
 
     public LayerwiseGradientFeatureAttribution(int size) {
-        saliencyMaps = new double[size];
-        sensitvityMaps = new double[size];
+        saliencyMaps = new float[size];
+        sensitivityMaps = new float[size];
     }
 
-    public double [] computeLayerwiseGradientFeatureAttribution(double [] target, double [] input, NeuralNetwork neuralNetwork) {
+    public float [] computeLayerwiseGradientFeatureAttribution(float [] target, float [] input, NeuralNetwork neuralNetwork) {
         neuralNetwork.forward(input, false);
         neuralNetwork.backwardWithTargetGrad(target, input);
 
-        double [] inputGrad = neuralNetwork.getLayer(0).computeInputGradient(input);
+        float [] inputGrad = neuralNetwork.getLayer(0).computeInputGradient(input);
         computeMaps(input, inputGrad);
 
-        double [] gradientAttribution = new double[input.length];
+        float [] gradientAttribution = new float[input.length];
 
         for(int i = 0; i < input.length; i++) {
-            double sign = Math.signum(inputGrad[i]);
-            double combinedMaps = Math.log(1 + Math.abs(saliencyMaps[i]*sensitvityMaps[i]));
+            float sign = Math.signum(inputGrad[i]);
+            float combinedMaps = (float)Math.log(1 + Math.abs(saliencyMaps[i]*sensitivityMaps[i]));
 
             gradientAttribution[i] = sign*combinedMaps;
         }
@@ -33,10 +33,10 @@ public class LayerwiseGradientFeatureAttribution
         return gradientAttribution;
     }
 
-    private void computeMaps(double [] input, double [] inputGrad) {
+    private void computeMaps(float [] input, float [] inputGrad) {
         for(int i = 0; i < input.length; i++) {
             saliencyMaps[i] = inputGrad[i]*input[i];
-            sensitvityMaps[i] = inputGrad[i]*inputGrad[i];
+            sensitivityMaps[i] = inputGrad[i]*inputGrad[i];
         }
     }
 }

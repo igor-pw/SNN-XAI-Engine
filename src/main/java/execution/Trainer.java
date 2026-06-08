@@ -1,11 +1,10 @@
 package execution;
 
-import activation.OutputActivation;
+import java.util.Locale;
 import core.Dataset;
 import initialization.Initializer;
 import io.CsvReader;
 import io.DataReader;
-import loss.AbstractLossFunc;
 import normalization.Normalizer;
 import regularization.L2Regularization;
 import regularization.LabelSmoothing;
@@ -14,15 +13,15 @@ import structure.Neuron;
 
 public class Trainer
 {
-    private double learningRate;
+    private float learningRate;
     private final int epoch;
     private final int batch;
     private final LabelSmoothing labelSmoothing;
     private final L2Regularization l2Regularization;
     private Dataset trainingDataset;
     private Dataset testDataset;
-    private double testAccuracy = 0.0;
-    private NeuralNetwork neuralNetwork;
+    private float testAccuracy = 0.0f;
+    private final NeuralNetwork neuralNetwork;
 
     private Trainer(Builder builder) {
         this.neuralNetwork = builder.neuralNetwork;
@@ -35,17 +34,17 @@ public class Trainer
 
     public static class Builder {
         private final NeuralNetwork neuralNetwork;
-        private double learningRate = 0.001;
+        private float learningRate = 0.001f;
         private int epoch = 10;
         private int batch = 32;
-        private double smoothing = 0.0;
-        private double decay = 0.0;
+        private float smoothing = 0.0f;
+        private float decay = 0.0f;
 
         public Builder(NeuralNetwork neuralNetwork) {
             this.neuralNetwork = neuralNetwork;
         }
 
-        public Builder learningRate(double learningRate) {
+        public Builder learningRate(float learningRate) {
             this.learningRate = learningRate;
             return this;
         }
@@ -60,12 +59,12 @@ public class Trainer
             return this;
         }
 
-        public Builder smoothing(double smoothing) {
+        public Builder smoothing(float smoothing) {
             this.smoothing = smoothing;
             return this;
         }
 
-        public Builder decay(double decay) {
+        public Builder decay(float decay) {
             this.decay = decay;
             return this;
         }
@@ -105,19 +104,12 @@ public class Trainer
         labelSmoothing.regulate(trainingDataset.getTarget());
 
         for(int i = 0; i < epoch; i++) {
-            double loss = 0.0;
+            long startTime = System.nanoTime();
+            float loss = 0.0f;
 
             int epochNumber = i + 1;
-            System.out.print("Epoch: " + epochNumber + ", ");
+            System.out.print("Epoch: " + epochNumber + " | ");
             trainingDataset.shuffle();
-
-            if(epochNumber == 10) {
-                learningRate *= 0.5;
-            }
-
-            if(epochNumber == 20) {
-                learningRate *= 0.5;
-            }
 
             for(int j = 0; j < trainingDatasetSize; j++) {
                 neuralNetwork.forward(trainingDataset.getFeatures(j), true);
@@ -131,29 +123,51 @@ public class Trainer
                 }
             }
 
-            double totalLoss = loss/trainingDatasetSize;
-            System.out.print("loss: " + totalLoss + " | ");
+            float totalLoss = loss/trainingDatasetSize;
 
             int counter = 0;
+            float testLoss = 0.0f;
             for(int j = 0; j < testDatasetSize; j++) {
-                double [] target = testDataset.getTarget(j);
-               int predict = argMax(predict(testDataset.getFeatures(j)));
-               if(target[predict] == 1.0) {
-                   counter++;
-               }
+                float [] target = testDataset.getTarget(j);
+                float [] prediction = predict(testDataset.getFeatures(j));
+
+                testLoss += neuralNetwork.calculateLoss(target);
+
+                int predictIndex;
+
+                if (prediction.length == 1) {
+                    predictIndex = (prediction[0] >= 0.5) ? 1 : 0;
+
+                    if ((int) target[0] == predictIndex) {
+                        counter++;
+                    }
+                }
+                else {
+                    predictIndex = argMax(prediction);
+                    if(target[predictIndex] == 1.0) {
+                        counter++;
+                    }
+                }
             }
 
-            testAccuracy = (100.0*counter)/testDatasetSize;
-            System.out.println("test_acc: " + testAccuracy + "%");
+            long endTime = System.nanoTime();
+
+            float epochTime = (endTime - startTime) / 1_000_000_000.0f;
+            testAccuracy = (100.0f * counter) / testDatasetSize;
+            float valLoss = testLoss / testDatasetSize;
+
+            System.out.printf(Locale.US, "loss: %.5f | val_loss: %.5f | test_acc: %.2f%% | time: %.3fs\n", totalLoss, valLoss, testAccuracy, epochTime);
+
+            learningRate *= 0.98f;
         }
     }
 
-    public double [] predict(double [] input) {
-        Neuron[] scalarResult = neuralNetwork.forward(input, true);
+    public float [] predict(float [] input) {
+        Neuron[] scalarResult = neuralNetwork.forward(input, false);
 
         int size = scalarResult.length;
 
-        double [] result = new double[size];
+        float [] result = new float[size];
 
         for(int i = 0; i < size; i++) {
             result[i] = scalarResult[i].getValue();
@@ -162,7 +176,7 @@ public class Trainer
         return result;
     }
 
-    public int argMax(double [] output) {
+    public int argMax(float [] output) {
         int bestIndex = 0;
 
         for(int i = 0; i < output.length; i++) {
@@ -175,5 +189,5 @@ public class Trainer
     }
 
     public NeuralNetwork getNeuralNetwork() { return neuralNetwork; }
-    public double getTestAccuracy() { return testAccuracy; }
+    public float getTestAccuracy() { return testAccuracy; }
 }

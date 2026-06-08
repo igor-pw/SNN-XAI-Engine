@@ -17,19 +17,19 @@ public class CsvReader implements DataReader
     public Dataset read(String filePath, int skipLines) {
         CSVReader reader = initCSVReader(filePath, skipLines);
 
-        List<double[]> featuresList = new ArrayList<>();
-        List<double[]> targetList = new ArrayList<>();
+        List<float[]> featuresList = new ArrayList<>();
+        List<float[]> targetList = new ArrayList<>();
 
         try {
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
-                double[] rowFeatures = new double[nextLine.length - 1];
+                float[] rowFeatures = new float[nextLine.length - 1];
 
                 for (int j = 0; j < nextLine.length - 1; j++) {
-                    rowFeatures[j] = Double.parseDouble(nextLine[j]);
+                    rowFeatures[j] = Float.parseFloat(nextLine[j]);
                 }
 
-                double[] rowTarget = { Double.parseDouble(nextLine[nextLine.length - 1]) };
+                float[] rowTarget = { Float.parseFloat(nextLine[nextLine.length - 1]) };
 
                 featuresList.add(rowFeatures);
                 targetList.add(rowTarget);
@@ -41,8 +41,8 @@ public class CsvReader implements DataReader
         }
 
         return new Dataset(
-                featuresList.toArray(new double[0][]),
-                targetList.toArray(new double[0][])
+                featuresList.toArray(new float[0][]),
+                targetList.toArray(new float[0][])
         );
     }
 
