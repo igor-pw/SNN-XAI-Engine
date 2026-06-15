@@ -15,8 +15,8 @@ public class MseLossTest extends LossFuncTest
     @Override
     protected Stream<Arguments> provideReturnXCostTestData() {
         return Stream.of(
-                Arguments.of( "No difference", TestGenerator.initOneValueNeuronVector(50, 0.75), TestGenerator.generateOneValueVector(50, 0.75), 0.0, 0.0),
-                Arguments.of( "With difference", TestGenerator.initDefinedNeuronVector(1.0, 2.0, 3.5, -2.5), new double[]{1.5, 3.0, 2.5, 3.0}, 8.125, 0.0)
+                Arguments.of( "No difference", TestGenerator.initOneValueNeuronVector(50, 0.75f), TestGenerator.generateOneValueVector(50, 0.75f), 0.0f, 0.0f),
+                Arguments.of( "With difference", TestGenerator.initDefinedNeuronVector(1.0f, 2.0f, 3.5f, -2.5f), new float[]{1.5f, 3.0f, 2.5f, 3.0f}, 8.125f, 0.0f)
         );
     };
 }

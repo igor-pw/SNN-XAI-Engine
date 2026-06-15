@@ -4,7 +4,7 @@ import activation.HiddenActivation;
 import activation.LinearActivation;
 import org.junit.jupiter.api.Test;
 import structure.Layer;
-import structure.Scalar;
+import structure.NeuralNetwork;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,8 +19,8 @@ public class LeCunInitializerTest
         int outputSize = 50;
         int inputSize = 150;
 
-        Layer layer = new Layer(inputSize, outputSize, linear);
-        Scalar [][] weight = layer.getWeight();
+        Layer layer = new Layer.Builder(inputSize, outputSize).build(linear);
+        float [][] weight = layer.getWeight();
 
         double notExpected = 0.0;
 
@@ -31,7 +31,7 @@ public class LeCunInitializerTest
         //then
         for(int i = 0; i < outputSize; i++) {
             for(int j = 0; j < inputSize; j++) {
-                result = weight[i][j].getValue();
+                result = weight[i][j];
                 assertNotEquals(notExpected, result);
             }
         }
@@ -43,21 +43,21 @@ public class LeCunInitializerTest
         int outputSize = 100;
         int inputSize = 200;
 
-        Layer layer = new Layer(inputSize, outputSize, linear);
-        Scalar[][] weight = layer.getWeight();
+        Layer layer = new Layer.Builder(inputSize, outputSize).build(linear);
+        float [][] weight = layer.getWeight();
 
-        double expectedMean = 0.0;
-        double expectedStd = Math.sqrt(1.0 / (double)inputSize);
+        float expectedMean = 0.0f;
+        float expectedStd = (float)Math.sqrt(1.0 / (float)inputSize);
 
         //when
-        double resultMean = 0.0;
-        double resultStd = 0.0;
+        float resultMean = 0.0f;
+        float resultStd = 0.0f;
         lecun.initialize(layer);
 
         //then
         for(int i = 0; i < outputSize; i++) {
             for(int j = 0; j < inputSize; j++) {
-                resultMean += weight[i][j].getValue();
+                resultMean += weight[i][j];
             }
         }
 
@@ -65,12 +65,12 @@ public class LeCunInitializerTest
 
         for(int i = 0; i < outputSize; i++) {
             for(int j = 0; j < inputSize; j++) {
-                resultStd += Math.pow((weight[i][j].getValue() - resultMean), 2);
+                resultStd += (float)Math.pow((weight[i][j] - resultMean), 2);
             }
         }
 
-        resultStd /= outputSize*inputSize;
-        resultStd = Math.sqrt(resultStd);
+        resultStd /= (float)outputSize*inputSize;
+        resultStd = (float)Math.sqrt(resultStd);
 
         assertEquals(expectedMean, resultMean, 1e-3);
         assertEquals(expectedStd, resultStd, 1e-3);

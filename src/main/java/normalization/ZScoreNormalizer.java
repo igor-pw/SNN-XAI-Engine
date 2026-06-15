@@ -1,12 +1,16 @@
 package normalization;
 
+import data.Dataset;
+
 public class ZScoreNormalizer implements Normalizer
 {
     private float [] mean;
     private float [] std;
 
     @Override
-    public float [][] normalize(float [][] data) {
+    public void normalize(Dataset dataset) {
+        float [][] data = dataset.getFeatures();
+
         int rows = data.length;
         int cols = data[0].length;
 
@@ -32,17 +36,19 @@ public class ZScoreNormalizer implements Normalizer
             std = (float)Math.sqrt(std);
 
             for(int j = 0; j < rows; j++) {
-                result [j][i] = (data[j][i] - mean) / (std + 1e-15f);
+                result[j][i] = (data[j][i] - mean) / (std + 1e-15f);
             }
 
             this.mean[i] = mean;
             this.std[i] = std;
         }
 
-        return result;
+        dataset.setFeatures(result);
     }
 
-    public float [][] normalizePredict(float [][] data) {
+    public void transform(Dataset dataset) {
+        float [][] data = dataset.getFeatures();
+
         int rows = data.length;
         int cols = data[0].length;
 
@@ -53,6 +59,6 @@ public class ZScoreNormalizer implements Normalizer
             }
         }
 
-        return result;
+        dataset.setFeatures(result);
     }
 }

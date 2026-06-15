@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class HeatmapGenerator
 {
-    public void saveHeatmapPanel(float[] originalInput, float[] input, int width, int height, String fileName) {
+    public static void saveHeatmapPanel(float[] originalInput, float[] input, int width, int height, String fileName) {
         float maxLrp = 1e-9f;
         for (float r : input) {
             if (Math.abs(r) > maxLrp) maxLrp = Math.abs(r);
@@ -88,6 +88,7 @@ public class HeatmapGenerator
         try {
             String fullPath = System.getProperty("user.dir") + File.separator + fileName;
             ImageIO.write(finalPanel, "png", new File(fullPath));
+            System.out.println("Panel generated at: " + fileName);
         } catch (IOException e) {
             System.err.println("Error saving heatmap: " + e.getMessage());
         }

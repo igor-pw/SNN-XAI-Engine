@@ -1,7 +1,6 @@
 package io;
 
-import core.Dataset;
-import io.CsvReader;
+import data.Dataset;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,8 +23,8 @@ public class CsvReaderTest
 
         //when
         Dataset dataset = reader.read(fileName, skipLines);
-        double [][] data = dataset.getFeatures();
-        double [][] target = dataset.getTarget();
+        float [][] data = dataset.getFeatures();
+        float [][] target = dataset.getTarget();
 
         //then
         assertNotEquals(null, data);
@@ -45,8 +44,8 @@ public class CsvReaderTest
 
         //when
         Dataset dataset = reader.read(fileName, skipLines);
-        double [][] data = dataset.getFeatures();
-        double [][] target = dataset.getTarget();
+        float [][] data = dataset.getFeatures();
+        float [][] target = dataset.getTarget();
 
         //then
         assertEquals(expectedDataSize[0], data.length);
@@ -60,22 +59,22 @@ public class CsvReaderTest
         String fileName = "src/test/resources/data.csv";
         int skipLines = 1;
 
-        double [][] expectedData = {{0.52,1.34,-0.87,2.11,0.03},
-                                    {-1.20,0.76,1.45,-0.33,1.89},
-                                    {0.88,-0.54,0.21,1.67,-1.02},
-                                    {1.73,2.05,-1.34,0.09,0.55},
-                                    {-0.41,1.11,0.93,-1.78,0.34},
-                                    {0.07,-1.63,2.30,0.42,-0.91},
-                                    {1.29,0.38,-0.66,1.05,1.77},
-                                    {-0.95,1.82,0.14,-0.57,-1.23},
-                                    {0.63,-0.29,1.01,2.44,0.18},
-                                    {-1.47,0.55,-1.10,0.81,1.04}};
-        double [] expectedTarget = {1.00, 0.00, 1.00, 0.00, 1.00, 0.00, 1.00, 1.00, 0.00, 0.00};
+        float [][] expectedData = {{0.52f,1.34f,-0.87f,2.11f,0.03f},
+                                    {-1.20f,0.76f,1.45f,-0.33f,1.89f},
+                                    {0.88f,-0.54f,0.21f,1.67f,-1.02f},
+                                    {1.73f,2.05f,-1.34f,0.09f,0.55f},
+                                    {-0.41f,1.11f,0.93f,-1.78f,0.34f},
+                                    {0.07f,-1.63f,2.30f,0.42f,-0.91f},
+                                    {1.29f,0.38f,-0.66f,1.05f,1.77f},
+                                    {-0.95f,1.82f,0.14f,-0.57f,-1.23f},
+                                    {0.63f,-0.29f,1.01f,2.44f,0.18f},
+                                    {-1.47f,0.55f,-1.10f,0.81f,1.04f}};
+        float [] expectedTarget = {1.00f, 0.00f, 1.00f, 0.00f, 1.00f, 0.00f, 1.00f, 1.00f, 0.00f, 0.00f};
 
         //when
         Dataset dataset = reader.read(fileName, skipLines);
-        double [][] data = dataset.getFeatures();
-        double [][] target = dataset.getTarget();
+        float [][] data = dataset.getFeatures();
+        float [][] target = dataset.getTarget();
 
        //then
        for(int i = 0; i < data.length; i++) {

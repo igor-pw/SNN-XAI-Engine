@@ -4,9 +4,10 @@ import activation.*;
 import initialization.Initializer;
 import loss.AbstractLossFunc;
 import loss.MseLoss;
-import optimization.GradientNormClipping;
-import optimization.NAdam;
-import optimization.Optimizer;
+import optimization.clipping.GradientClipping;
+import optimization.clipping.NoOpGradientClipping;
+import optimization.optimizer.NAdam;
+import optimization.optimizer.Optimizer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class NeuralNetwork implements Serializable
     private final AbstractLossFunc lossFunc;
     private final OutputActivation outputActivation;
     private final Optimizer adamOptimizer;
-    private final GradientNormClipping gradientNormClipping;
+    private final GradientClipping gradientClipping;
     private float cost = 0.0f;
 
     private NeuralNetwork(Builder builder) {
@@ -40,7 +41,7 @@ public class NeuralNetwork implements Serializable
         this.outputActivation = builder.outputActivation;
         this.adamOptimizer = builder.adamOptimizer;
         this.adamOptimizer.init(layer);
-        this.gradientNormClipping = builder.gradientNormClipping;
+        this.gradientClipping = builder.gradientClipping;
     }
 
     public static class Builder {
@@ -48,7 +49,7 @@ public class NeuralNetwork implements Serializable
         private AbstractLossFunc lossFunc = new MseLoss();
         private OutputActivation outputActivation = new ReluActivation();
         private Optimizer adamOptimizer = new NAdam.Builder().build();
-        private GradientNormClipping gradientNormClipping = new GradientNormClipping(1.0f);
+        private GradientClipping gradientClipping = new NoOpGradientClipping();
 
         public Builder addLayer(Layer.Builder layerBuilder) {
             this.layerBuilder.add(layerBuilder);
@@ -70,8 +71,8 @@ public class NeuralNetwork implements Serializable
             return this;
         }
 
-        public Builder gradientClipping(GradientNormClipping gradientNormClipping) {
-            this.gradientNormClipping = gradientNormClipping;
+        public Builder gradientClipping(GradientClipping gradientClipping) {
+            this.gradientClipping = gradientClipping;
             return this;
         }
 
@@ -128,7 +129,7 @@ public class NeuralNetwork implements Serializable
     }
 
     public void updateNetwork(float learningRate, int batch) {
-        gradientNormClipping.optimize(layer);
+        gradientClipping.clip(layer);
         adamOptimizer.optimize(layer, learningRate, batch);
         clearGraph();
     }

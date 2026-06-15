@@ -1,21 +1,20 @@
-package optimization;
+package optimization.clipping;
 
 import structure.Layer;
 
-import java.io.Serializable;
-
-public class GradientNormClipping implements Serializable
+public class GradientNormClipping implements  GradientClipping
 {
     private final float maxNorm;
 
-    public GradientNormClipping(float maxNorm) {
+    public GradientNormClipping(double maxNorm) {
         if(maxNorm <= 0.0) {
             throw new IllegalArgumentException("Invalid maxNorm value");
         }
-        this.maxNorm = maxNorm;
+        this.maxNorm = (float)maxNorm;
     }
 
-    public void optimize(Layer[] layer) {
+    @Override
+    public void clip(Layer[] layer) {
         float gradientNorm = 0.0f;
         for(int i = 0; i < layer.length; i++) {
             float [] biasGrad = layer[i].getBiasGrad();

@@ -12,14 +12,9 @@ public class BceLoss extends AbstractLossFunc
         float cost = 0.0f;
 
         for(int i = 0; i < size; i++) {
-            float value = Math.max(0.00001f, Math.min(0.99999f, predicted[i].getValue()));
+            float value = Math.max(0.0000001f, Math.min(0.9999999f, predicted[i].getValue()));
             cost += (target[i] * (float)Math.log(value) + (1.0f - target[i]) * (float)Math.log(1.0f - value));
-
-            if(Float.isNaN(cost)) {
-                System.out.println("NaN");
-            }
         }
-
 
         return -cost/size;
     }

@@ -1,4 +1,4 @@
-package optimization;
+package optimization.optimizer;
 
 import structure.Layer;
 
@@ -16,10 +16,10 @@ public class NAdam implements Optimizer
     private int steps = 0;
 
     private NAdam(Builder builder) {
-        this.beta1 = builder.beta1;
-        this.beta2 = builder.beta2;
-        this.momentumDecay = builder.momentumDecay;
-        this.epsilon = builder.epsilon;
+        this.beta1 = (float)builder.beta1;
+        this.beta2 = (float)builder.beta2;
+        this.momentumDecay = (float)builder.momentumDecay;
+        this.epsilon = (float)builder.epsilon;
     }
 
     public void init(Layer [] layer) {
@@ -40,27 +40,27 @@ public class NAdam implements Optimizer
     }
 
     public static class Builder {
-        private float beta1 = 0.9f;
-        private float beta2 = 0.999f;
-        private float momentumDecay = 4e-3f;
-        private float epsilon = 1e-8f;
+        private double beta1 = 0.9;
+        private double beta2 = 0.999;
+        private double momentumDecay = 4e-3;
+        private double epsilon = 1e-8;
 
-        public Builder beta1(float beta1) {
+        public Builder beta1(double beta1) {
             this.beta1 = beta1;
             return this;
         }
 
-        public Builder beta2(float beta2) {
+        public Builder beta2(double beta2) {
             this.beta2 = beta2;
             return this;
         }
 
-        public Builder momentumDecay(float momentumDecay) {
+        public Builder momentumDecay(double momentumDecay) {
             this.momentumDecay = momentumDecay;
             return this;
         }
 
-        public Builder epsilon(float epsilon) {
+        public Builder epsilon(double epsilon) {
             this.epsilon = epsilon;
             return this;
         }
@@ -112,76 +112,4 @@ public class NAdam implements Optimizer
             });
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-        /*steps++;
-        float b1 = 1.0f - betaPower1;
-        float b2 = 1.0f - betaPower2;
-        int weightIndex = 0;
-        int biasIndex = 0;
-
-        for (int i = 0; i < layer.length; i++) {
-            float[][] weight = layer[i].getWeight();
-            float[][] weightGrad = layer[i].getWeightGrad();
-            float[] bias = layer[i].getBias();
-            float[] biasGrad = layer[i].getBiasGrad();
-
-            for (int j = 0; j < weight.length; j++) {
-                float grad = biasGrad[j] / batch;
-
-                if(Float.isNaN(bias[j]) || Float.isInfinite(bias[j])) {
-                   new Throwable("bias NaN").printStackTrace();
-                   System.exit(1);
-                }
-
-                biasMomentum[biasIndex] = (beta1 * biasMomentum[biasIndex] + (1.0f - beta1) * grad);
-                biasVelocity[biasIndex] = (beta2 * biasVelocity[biasIndex] + (1.0f - beta2) * grad * grad);
-
-                float mHat = (biasMomentum[biasIndex] / b1);
-                float vHat = (biasVelocity[biasIndex] / b2);
-                float gHat = grad / b1;
-
-                //Nesterov momentum
-                mHat = beta1 * mHat + (1.0f - beta1) * gHat;
-
-                bias[j] -= (learningRate * mHat) / (float)(Math.sqrt(vHat) + epsilon);
-                biasIndex++;
-
-                for (int k = 0; k < weight[j].length; k++) {
-                    grad = weightGrad[j][k] / batch;
-
-                    if(Float.isNaN(weight[j][k]) || Float.isInfinite(weight[j][k])) {
-                        new Throwable("weight NaN").printStackTrace();
-                        System.exit(1);
-                    }
-
-
-                    weightMomentum[weightIndex] = (beta1 * weightMomentum[weightIndex] + (1.0f - beta1) * grad);
-                    weightVelocity[weightIndex] = (beta2 * weightVelocity[weightIndex] + (1.0f - beta2) * grad * grad);
-
-                    mHat = (weightMomentum[weightIndex] / b1);
-                    vHat = (weightVelocity[weightIndex] / b2);
-                    gHat = grad / b1;
-
-                    //Nesterov momentum
-                    mHat = beta1 * mHat + (1.0f - beta1) * gHat;
-
-                    weight[j][k] -= (learningRate * mHat) / (float)(Math.sqrt(vHat) + epsilon);
-                    weightIndex++;
-                }
-            }
-        }
-
-        betaPower1 *= beta1;
-        betaPower2 *= beta2;
-    }*/
 }

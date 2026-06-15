@@ -1,11 +1,7 @@
 package activation;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
-
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class SeluActivationTest extends HiddenActivationFuncTest
 {
@@ -17,9 +13,9 @@ public class SeluActivationTest extends HiddenActivationFuncTest
     @Override
     protected Stream<Arguments> provideUpdateToXTestData() {
         return Stream.of(
-                Arguments.of("Negative input", -5.67, -1.75203765117812),
-                Arguments.of("Zero input", 0.0, 0.0),
-                Arguments.of("Positive input", 3.57, 3.751002524859065)
+                Arguments.of("Negative input", -5.67f, -1.75203765117812f),
+                Arguments.of("Zero input", 0.0f, 0.0f),
+                Arguments.of("Positive input", 3.57f, 3.751002524859065f)
         );
     };
 
@@ -27,14 +23,14 @@ public class SeluActivationTest extends HiddenActivationFuncTest
     protected Stream<Arguments> provideUpdateToVectorXTestData() {
         return Stream.of(
                 Arguments.of("Negative input",
-                        new double[]{-0.91, -3.14192},
-                        new double[]{-1.050421767898739, -1.682149845496720}),
+                        new float[]{-0.91f, -3.14192f},
+                        new float[]{-1.050421767898739f, -1.682149845496720f}),
                 Arguments.of("Positive input",
-                        new double[]{8.24, 0.48},
-                        new double[]{8.657776135809159, 0.504336473930630}),
+                        new float[]{8.24f, 0.48f},
+                        new float[]{8.657776135809159f, 0.504336473930630f}),
                 Arguments.of("Mixed input",
-                        new double[]{-7.213, 4.321, -1.04, -5.12, 0.12},
-                        new double[]{-1.756803721832739, 4.540078966363031, -1.136690897476226, -1.747592898934778, 0.126084118482658})
+                        new float[]{-7.213f, 4.321f, -1.04f, -5.12f, 0.12f},
+                        new float[]{-1.756803721832739f, 4.540078966363031f, -1.136690897476226f, -1.747592898934778f, 0.126084118482658f})
         );
     }
 }

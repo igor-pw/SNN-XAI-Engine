@@ -1,8 +1,8 @@
 package structure;
 
 import activation.HiddenActivation;
-import regularization.AlphaDropout;
-import regularization.Regulator;
+import regularization.dropout.AlphaDropout;
+import regularization.dropout.Dropout;
 
 import java.io.Serializable;
 import java.util.stream.IntStream;
@@ -16,7 +16,7 @@ public class Layer implements Serializable
     private final float [] activationInput;
     private final Neuron [] output;
     private final HiddenActivation activation;
-    private final Regulator dropout;
+    private final Dropout dropout;
 
     private Layer(Builder builder, HiddenActivation activation) {
         int inputSize = builder.input;
@@ -36,20 +36,20 @@ public class Layer implements Serializable
             bias[i] = 0.0f;
         }
 
-        dropout = new AlphaDropout(outputSize, builder.dropout);
+        dropout = new AlphaDropout(outputSize, (float)builder.dropout);
     }
 
     public static class Builder {
         private final int input;
         private final int output;
-        private float dropout;
+        private double dropout = 0.0;
 
         public Builder(int input, int output) {
             this.input = input;
             this.output = output;
         }
 
-        public Builder dropout(float dropout) {
+        public Builder dropout(double dropout) {
             this.dropout = dropout;
             return this;
         }

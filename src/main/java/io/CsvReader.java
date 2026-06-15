@@ -2,9 +2,8 @@ package io;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
-import com.opencsv.exceptions.CsvException;
 import com.opencsv.exceptions.CsvValidationException;
-import core.Dataset;
+import data.Dataset;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

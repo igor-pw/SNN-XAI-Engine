@@ -1,9 +1,5 @@
 package structure;
 
-import activation.HiddenActivation;
-import regularization.AlphaDropout;
-import regularization.Regulator;
-
 import java.io.Serializable;
 
 public class Neuron implements Serializable

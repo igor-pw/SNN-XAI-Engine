@@ -1,5 +1,6 @@
 package normalization;
 
+import data.Dataset;
 import org.junit.jupiter.api.Test;
 import utils.TestGenerator;
 
@@ -13,10 +14,12 @@ public class ZScoreNormalizerTest
     @Test
     public void shouldReturnMatrix_whenNormalizeIsUsed() {
         //given
-        double [][] data = TestGenerator.generateRandomMatrix(2, 6);
+        float [][] data = TestGenerator.generateRandomMatrix(2, 6);
+        Dataset dataset = new Dataset(data, null);
 
         //when
-        double [][] result = zScore.normalize(data);
+        zScore.normalize(dataset);
+        float [][] result = dataset.getFeatures();
 
         //then
         for(int i = 0; i < data.length; i++) {
@@ -31,13 +34,14 @@ public class ZScoreNormalizerTest
         int rows = 4;
         int cols = 3;
 
-        double [][] data = TestGenerator.generateRandomMatrix(rows, cols);
+        float [][] data = TestGenerator.generateRandomMatrix(rows, cols);
+        Dataset dataset = new Dataset(data, null);
 
         int expectedRows = 4;
         int expectedCols = 3;
 
         //when
-        double [][] result = zScore.normalize(data);
+        zScore.normalize(dataset);
 
         //then
         assertEquals(expectedRows, rows);
@@ -49,15 +53,17 @@ public class ZScoreNormalizerTest
         //given
         int rows = 100;
         int cols = 20;
-        double [][] data = TestGenerator.generateRandomMatrix(rows, cols);
+        float [][] data = TestGenerator.generateRandomMatrix(rows, cols);
+        Dataset dataset = new Dataset(data, null);
 
-        double expectedMean = 0.0;
-        double expectedStd = 1.0;
+        float expectedMean = 0.0f;
+        float expectedStd = 1.0f;
 
         //when
-        double [][] result = zScore.normalize(data);
-        double resultMean = 0.0;
-        double resultStd = 0.0;
+        zScore.normalize(dataset);
+        float [][] result = dataset.getFeatures();
+        float resultMean = 0.0f;
+        float resultStd = 0.0f;
         int n = rows*cols;
 
         for(int i = 0; i < rows; i++) {
@@ -70,16 +76,16 @@ public class ZScoreNormalizerTest
 
         for(int i = 0; i < rows; i++) {
             for(int j = 0; j < cols; j++) {
-                resultStd += Math.pow((result[i][j] - resultMean), 2);
+                resultStd += (float)Math.pow((result[i][j] - resultMean), 2);
             }
         }
 
         resultStd /= n;
-        resultStd = Math.sqrt(resultStd);
+        resultStd = (float)Math.sqrt(resultStd);
 
         //then
-        assertEquals(expectedMean, resultMean, 1e-12);
-        assertEquals(expectedStd, resultStd, 1e-12);
+        assertEquals(expectedMean, resultMean, 1e-6);
+        assertEquals(expectedStd, resultStd, 1e-6);
     }
 
 

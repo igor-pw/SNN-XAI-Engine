@@ -1,21 +1,20 @@
 package integration;
 
 import activation.*;
+import data.Dataset;
 import execution.Trainer;
 import initialization.Initializer;
 import initialization.LeCunInitializer;
-import loss.AbstractLossFunc;
+import io.CsvReader;
+import io.DataReader;
 import loss.BceLoss;
-import loss.MseLoss;
 import normalization.Normalizer;
 import normalization.ZScoreNormalizer;
-import optimization.NAdam;
-import org.junit.jupiter.api.Disabled;
+import optimization.optimizer.NAdam;
 import org.junit.jupiter.api.Test;
 import structure.Layer;
 import structure.NeuralNetwork;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XorTest
@@ -26,8 +25,14 @@ public class XorTest
         long seed = 42;
         String pathName = "src/test/resources/Xor_Dataset.csv";
 
+        DataReader reader = new CsvReader();
+
+        Dataset dataset = reader.read(pathName, 1);
+
         Initializer lecun = new LeCunInitializer(seed);
         Normalizer zScore = new ZScoreNormalizer();
+
+        zScore.normalize(dataset);
 
         NeuralNetwork neuralNetwork = new NeuralNetwork.Builder()
                 .addLayer(new Layer.Builder(4, 2))
@@ -44,15 +49,12 @@ public class XorTest
                 .batch(4)
                 .build();
 
-        trainer.readTrainingData(pathName, 1);
-        trainer.readTestData(pathName, 1);
-        trainer.normalizeData(zScore);
         trainer.initNeuralNetwork(lecun);
+        trainer.loadData(dataset, dataset);
 
         trainer.fit();
 
-
         //then
-        assertTrue(trainer.getTestAccuracy() > 99.00);
+        assertTrue(trainer.getValAccuracy() > 99.00);
     }
 }

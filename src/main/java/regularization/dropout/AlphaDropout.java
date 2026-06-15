@@ -1,10 +1,10 @@
-package regularization;
+package regularization.dropout;
 
 import structure.Neuron;
 
 import java.util.Random;
 
-public class AlphaDropout implements Regulator
+public class AlphaDropout implements Dropout
 {
     private static final float saturation = -1.758099f;
     private final float q;

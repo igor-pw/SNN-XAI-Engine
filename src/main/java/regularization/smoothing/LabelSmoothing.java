@@ -1,19 +1,14 @@
-package regularization;
+package regularization.smoothing;
 
-import structure.Neuron;
-
-public class LabelSmoothing
+public class LabelSmoothing implements Smoothing
 {
     private final float epsilon;
 
-    public LabelSmoothing() {
-        epsilon = 0.0f;
+    public LabelSmoothing(double epsilon) {
+        this.epsilon = (float)epsilon;
     }
 
-    public LabelSmoothing(float epsilon) {
-        this.epsilon = epsilon;
-    }
-
+    @Override
     public void regulate(float [][] target) {
         for(int i = 0; i < target.length; i++) {
             for(int j = 0; j < target[0].length; j++) {

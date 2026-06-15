@@ -1,6 +1,6 @@
 package io;
 
-import core.Dataset;
+import data.Dataset;
 
 public interface DataReader
 {

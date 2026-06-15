@@ -1,6 +1,4 @@
-package core;
-
-import normalization.Normalizer;
+package data;
 
 import java.util.*;
 
@@ -19,10 +17,6 @@ public class Dataset
         for(int i = 0; i < features.length; i++) {
             index[i] = i;
         }
-    }
-
-    public void normalize(Normalizer normalizer) {
-        features = normalizer.normalize(features);
     }
 
     public void shuffle() {
@@ -48,6 +42,7 @@ public class Dataset
 
     public float [] getFeatures(int i) { return features[index[i]]; }
     public float [][] getFeatures() { return features; }
+    public void setFeatures(float [][] features) { this.features = features; }
     public float [] getTarget(int i) { return target[index[i]]; }
     public float [][] getTarget() { return target; }
 }

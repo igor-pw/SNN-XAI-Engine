@@ -1,10 +1,7 @@
 package activation;
 
 import org.junit.jupiter.params.provider.Arguments;
-
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class LinearActivationTest extends HiddenActivationFuncTest
 {
@@ -16,9 +13,9 @@ public class LinearActivationTest extends HiddenActivationFuncTest
     @Override
     protected Stream<Arguments> provideUpdateToXTestData() {
         return Stream.of(
-                Arguments.of("Negative input", -5.67, -5.67),
-                Arguments.of("Zero input", 0.0, 0.0),
-                Arguments.of("Positive input", 3.57, 3.57)
+                Arguments.of("Negative input", -5.67f, -5.67f),
+                Arguments.of("Zero input", 0.0f, 0.0f),
+                Arguments.of("Positive input", 3.57f, 3.57f)
         );
     };
 
@@ -26,14 +23,14 @@ public class LinearActivationTest extends HiddenActivationFuncTest
     protected Stream<Arguments> provideUpdateToVectorXTestData() {
         return Stream.of(
                 Arguments.of("Negative input",
-                        new double[]{-0.91, -3.14192},
-                        new double[]{-0.91, -3.14192}),
+                        new float[]{-0.91f, -3.14192f},
+                        new float[]{-0.91f, -3.14192f}),
                 Arguments.of("Positive Input",
-                        new double[]{8.24, 0.48},
-                        new double[]{8.24, 0.48}),
+                        new float[]{8.24f, 0.48f},
+                        new float[]{8.24f, 0.48f}),
                 Arguments.of("Mixed input",
-                        new double[]{-7.213, 4.321, -1.04, -5.12, 0.12},
-                        new double[]{-7.213, 4.321, -1.04, -5.12, 0.12})
+                        new float[]{-7.213f, 4.321f, -1.04f, -5.12f, 0.12f},
+                        new float[]{-7.213f, 4.321f, -1.04f, -5.12f, 0.12f})
         );
     };
 }

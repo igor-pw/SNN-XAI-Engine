@@ -5,7 +5,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import structure.Neuron;
-
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,7 +17,7 @@ public abstract class OutputActivationFuncTest
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("provideUpdateToVectorXTestData")
-    public void shouldUpdateToVectorX_whenActivateIsUsed(String description, Neuron [] input, double [] expected) {
+    public void shouldUpdateToVectorX_whenActivateIsUsed(String description, Neuron [] input, float [] expected) {
         //given
 
         //when
@@ -26,7 +25,7 @@ public abstract class OutputActivationFuncTest
 
         //then
         for(int i = 0; i < expected.length; i++) {
-            assertEquals(expected[i], input[i].getValue(), 1e-9);
+            assertEquals(expected[i], input[i].getValue(), 1e-6);
         }
     }
 }

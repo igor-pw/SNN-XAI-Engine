@@ -1,19 +1,16 @@
-package regularization;
+package regularization.weight;
 
 import structure.Layer;
 
-public class L2Regularization
+public class L2Regularizer implements WeightRegularizer
 {
     private final float decay;
 
-    public L2Regularization() {
-        this.decay = 0.0001f;
+    public L2Regularizer(double decay) {
+        this.decay = (float)decay;
     }
 
-    public L2Regularization(float decay) {
-        this.decay = decay;
-    }
-
+    @Override
     public float regulate(Layer [] layer) {
         float loss = 0.0f;
         for(int i = 0; i < layer.length; i++) {

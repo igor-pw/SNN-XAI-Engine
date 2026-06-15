@@ -1,9 +1,11 @@
 package normalization;
 
+import data.Dataset;
+
 import java.io.Serializable;
 
 public interface Normalizer extends Serializable
 {
-    float [][] normalize(float [][] data);
-    float [][] normalizePredict(float [][] data);
+    void normalize(Dataset data);
+    void transform(Dataset data);
 }

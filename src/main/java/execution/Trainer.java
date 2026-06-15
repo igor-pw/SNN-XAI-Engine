@@ -1,13 +1,17 @@
 package execution;
 
 import java.util.Locale;
-import core.Dataset;
+import data.Dataset;
+import data.ModelTracker;
 import initialization.Initializer;
-import io.CsvReader;
-import io.DataReader;
-import normalization.Normalizer;
-import regularization.L2Regularization;
-import regularization.LabelSmoothing;
+import optimization.scheduler.NoOpScheduler;
+import optimization.scheduler.Scheduler;
+import optimization.stopping.NoOpStopping;
+import optimization.stopping.Stopping;
+import regularization.smoothing.NoOpSmoothing;
+import regularization.smoothing.Smoothing;
+import regularization.weight.NoOpWeightRegularizer;
+import regularization.weight.WeightRegularizer;
 import structure.NeuralNetwork;
 import structure.Neuron;
 
@@ -16,35 +20,43 @@ public class Trainer
     private float learningRate;
     private final int epoch;
     private final int batch;
-    private final LabelSmoothing labelSmoothing;
-    private final L2Regularization l2Regularization;
+    private final Smoothing smoothing;
+    private final WeightRegularizer weightRegularizer;
+    private final Stopping earlyStopping;
+    private final Scheduler scheduler;
     private Dataset trainingDataset;
-    private Dataset testDataset;
-    private float testAccuracy = 0.0f;
+    private Dataset validationDataset;
+    private float accuracy = 0.0f;
     private final NeuralNetwork neuralNetwork;
+    private final ModelTracker tracker;
 
     private Trainer(Builder builder) {
         this.neuralNetwork = builder.neuralNetwork;
-        this.learningRate = builder.learningRate;
+        this.learningRate = (float)builder.learningRate;
         this.epoch = builder.epoch;
         this.batch = builder.batch;
-        labelSmoothing = new LabelSmoothing(builder.smoothing);
-        l2Regularization = new L2Regularization(builder.decay);
+        this.smoothing = builder.smoothing;
+        this.weightRegularizer = builder.weightRegularizer;
+        this.earlyStopping = builder.earlyStopping;
+        this.scheduler = builder.scheduler;
+        this.tracker = new ModelTracker(neuralNetwork.getLayer());
     }
 
     public static class Builder {
         private final NeuralNetwork neuralNetwork;
-        private float learningRate = 0.001f;
+        private Smoothing smoothing = new NoOpSmoothing();
+        private Scheduler scheduler = new NoOpScheduler();
+        private WeightRegularizer weightRegularizer = new NoOpWeightRegularizer();
+        private Stopping earlyStopping = new NoOpStopping();
+        private double learningRate = 0.001;
         private int epoch = 10;
         private int batch = 32;
-        private float smoothing = 0.0f;
-        private float decay = 0.0f;
 
         public Builder(NeuralNetwork neuralNetwork) {
             this.neuralNetwork = neuralNetwork;
         }
 
-        public Builder learningRate(float learningRate) {
+        public Builder learningRate(double learningRate) {
             this.learningRate = learningRate;
             return this;
         }
@@ -59,13 +71,23 @@ public class Trainer
             return this;
         }
 
-        public Builder smoothing(float smoothing) {
+        public Builder smoothing(Smoothing smoothing) {
             this.smoothing = smoothing;
             return this;
         }
 
-        public Builder decay(float decay) {
-            this.decay = decay;
+        public Builder weightRegularizer(WeightRegularizer weightRegularizer) {
+            this.weightRegularizer = weightRegularizer;
+            return this;
+        }
+
+        public Builder earlyStopping(Stopping earlyStopping) {
+            this.earlyStopping = earlyStopping;
+            return this;
+        }
+
+        public Builder scheduler(Scheduler scheduler) {
+            this.scheduler = scheduler;
             return this;
         }
 
@@ -74,41 +96,26 @@ public class Trainer
         }
     }
 
-    public void readTrainingData(String pathName, int skipLines) {
-        DataReader reader = new CsvReader();
-        trainingDataset = reader.read(pathName, skipLines);
-    }
-
-    public void readTestData(String pathName, int skipLines) {
-        DataReader reader = new CsvReader();
-        testDataset = reader.read(pathName, skipLines);
+    public void loadData(Dataset trainingDataset, Dataset validationDataset) {
+        this.trainingDataset = trainingDataset;
+        this.validationDataset = validationDataset;
     }
 
     public void initNeuralNetwork(Initializer initializer) {
         neuralNetwork.initializeWeights(initializer);
     }
 
-    public void normalizeData(Normalizer normalizer) {
-        trainingDataset.normalize(normalizer);
-        testDataset.normalize(normalizer);
-    }
-
-    public void toOneHotEncoding(int size) {
-        trainingDataset.toOneHotEncoding(size);
-        testDataset.toOneHotEncoding(size);
-    }
-
     public void fit() {
         int trainingDatasetSize = trainingDataset.getTarget().length;
-        int testDatasetSize = testDataset.getTarget().length;
-        labelSmoothing.regulate(trainingDataset.getTarget());
+        smoothing.regulate(trainingDataset.getTarget());
+
+        System.out.println("");
 
         for(int i = 0; i < epoch; i++) {
             long startTime = System.nanoTime();
             float loss = 0.0f;
 
             int epochNumber = i + 1;
-            System.out.print("Epoch: " + epochNumber + " | ");
             trainingDataset.shuffle();
 
             for(int j = 0; j < trainingDatasetSize; j++) {
@@ -118,47 +125,27 @@ public class Trainer
 
                 //Mini-Batch Gradient Descent
                 if(((j+1) % batch == 0) || (j == trainingDatasetSize-1)) {
-                    l2Regularization.regulate(neuralNetwork.getLayer());
+                    weightRegularizer.regulate(neuralNetwork.getLayer());
                     neuralNetwork.updateNetwork(learningRate, batch);
                 }
             }
 
-            float totalLoss = loss/trainingDatasetSize;
+            float trainingLoss = loss/trainingDatasetSize;
 
-            int counter = 0;
-            float testLoss = 0.0f;
-            for(int j = 0; j < testDatasetSize; j++) {
-                float [] target = testDataset.getTarget(j);
-                float [] prediction = predict(testDataset.getFeatures(j));
-
-                testLoss += neuralNetwork.calculateLoss(target);
-
-                int predictIndex;
-
-                if (prediction.length == 1) {
-                    predictIndex = (prediction[0] >= 0.5) ? 1 : 0;
-
-                    if ((int) target[0] == predictIndex) {
-                        counter++;
-                    }
-                }
-                else {
-                    predictIndex = argMax(prediction);
-                    if(target[predictIndex] == 1.0) {
-                        counter++;
-                    }
-                }
-            }
-
+            float valLoss = validate();
             long endTime = System.nanoTime();
 
             float epochTime = (endTime - startTime) / 1_000_000_000.0f;
-            testAccuracy = (100.0f * counter) / testDatasetSize;
-            float valLoss = testLoss / testDatasetSize;
 
-            System.out.printf(Locale.US, "loss: %.5f | val_loss: %.5f | test_acc: %.2f%% | time: %.3fs\n", totalLoss, valLoss, testAccuracy, epochTime);
+            System.out.printf(Locale.US, "Epoch: %d | loss: %.5f | val_loss: %.5f | val_acc: %.2f%% | time: %.3fs\n", epochNumber, trainingLoss, valLoss, accuracy, epochTime);
 
-            learningRate *= 0.98f;
+            if(earlyStopping.shouldStop(valLoss)) {
+                System.out.println("Training stopped");
+                break;
+            }
+
+            learningRate = scheduler.step(learningRate, epochNumber);
+            tracker.track(neuralNetwork, valLoss, accuracy);
         }
     }
 
@@ -176,6 +163,47 @@ public class Trainer
         return result;
     }
 
+    public float validate() {
+        int validationDatasetSize = validationDataset.getTarget().length;
+
+        float loss = 0.0f;
+        int counter = 0;
+
+        for(int i = 0; i < validationDatasetSize; i++) {
+            float [] target = validationDataset.getTarget(i);
+            float [] prediction = predict(validationDataset.getFeatures(i));
+
+            loss += neuralNetwork.calculateLoss(target);
+
+            int predictIndex;
+            int targetClass;
+
+            if (prediction.length == 1) {
+                predictIndex = (prediction[0] >= 0.5) ? 1 : 0;
+
+                if ((int) target[0] == predictIndex) {
+                    counter++;
+                }
+            }
+            else {
+                predictIndex = argMax(prediction);
+                targetClass = argMax(target);
+                if(targetClass == predictIndex) {
+                    counter++;
+                }
+            }
+
+            accuracy = (100.0f * counter) / validationDatasetSize;
+        }
+
+        return loss / validationDatasetSize;
+    }
+
+    public void restoreBestModel() {
+        tracker.loadBestModel(neuralNetwork);
+        accuracy = tracker.getValAcc();
+    }
+
     public int argMax(float [] output) {
         int bestIndex = 0;
 
@@ -189,5 +217,5 @@ public class Trainer
     }
 
     public NeuralNetwork getNeuralNetwork() { return neuralNetwork; }
-    public float getTestAccuracy() { return testAccuracy; }
+    public float getValAccuracy() { return accuracy; }
 }

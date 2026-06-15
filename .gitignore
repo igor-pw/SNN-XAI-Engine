@@ -2,4 +2,8 @@ Dokumentacja/
 SNN-XAI-Engine.iml
 target/
 .idea/
-src/test/resources/MNIST/mnist_train.csv
+src/test/resources/MNIST
+src/test/resources/Higgs
+/src/model
+/src/main/java/sandbox
+/src/main/java/xai/GenerativeVisualAttribution.java

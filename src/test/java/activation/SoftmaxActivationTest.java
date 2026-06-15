@@ -19,14 +19,14 @@ public class SoftmaxActivationTest extends OutputActivationFuncTest {
     protected Stream<Arguments> provideUpdateToVectorXTestData() {
         return Stream.of(
                 Arguments.of("Negative input",
-                        initDefinedNeuronVector(-4.612, -5.129),
-                        new double[]{0.6264459988, 0.3735540012}),
+                        initDefinedNeuronVector(-4.612f, -5.129f),
+                        new float[]{0.6264459988f, 0.3735540012f}),
                 Arguments.of("Positive input",
-                        initDefinedNeuronVector(3.90123, 1.4512, 3.5121),
-                        new double[]{0.566913617, 0.0489195416, 0.3841668414}),
+                        initDefinedNeuronVector(3.90123f, 1.4512f, 3.5121f),
+                        new float[]{0.566913617f, 0.0489195416f, 0.3841668414f}),
                 Arguments.of("Mixed input",
-                        initDefinedNeuronVector(6.9452, -12.4521, 4.1518, -9.3215, -3.9781),
-                        new double[]{0.9423020364, 0.0000000035, 0.0576808862, 0.0000000812, 0.0000169927})
+                        initDefinedNeuronVector(6.9452f, -12.4521f, 4.1518f, -9.3215f, -3.9781f),
+                        new float[]{0.9423020364f, 0.0000000035f, 0.0576808862f, 0.0000000812f, 0.0000169927f})
         );
     }
 }
